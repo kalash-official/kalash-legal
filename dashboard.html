@@ -1,0 +1,13 @@
+<h2>Stock Recommendations</h2>
+<div id="stocks"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+<script>
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+const db = getFirestore();
+
+const snap = await getDocs(collection(db,"recommendations"));
+snap.forEach(doc=>{
+  stocks.innerHTML += `<p>${doc.data().symbol} - ${doc.data().price}</p>`;
+});
+</script>

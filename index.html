@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kalash — Stock Recommendations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+      color: #2c3e50;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 40px;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .login-btn {
+      padding: 10px 18px;
+      border-radius: 6px;
+      background: #2c3e50;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .login-btn:hover {
+      background: #1a252f;
+    }
+
+    /* Hero section */
+    .hero {
+      height: calc(100vh - 70px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      max-width: 600px;
+      color: #555;
+    }
+
+    .cta {
+      margin-top: 24px;
+    }
+
+    .cta a {
+      padding: 12px 24px;
+      border-radius: 6px;
+      background: #e74c3c;
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      transition: 0.2s;
+    }
+
+    .cta a:hover {
+      background: #c0392b;
+    }
+
+    @media(max-width: 600px) {
+      .hero h1 { font-size: 36px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">KALASH</div>
+    <a href="landing_page.html" class="login-btn">Login</a>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>Stock Recommendations, Simplified</h1>
+    <p>
+      Kalash provides educational stock recommendations and market insights to help you make informed decisions.
+      We are not a SEBI registered advisor.
+    </p>
+
+    <div class="cta">
+      <a href="login.html">Get Started</a>
+    </div>
+  </div>
+
+</body>
+</html>

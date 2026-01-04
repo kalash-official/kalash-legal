@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login — Kalash</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #fff; }
+    .container { max-width: 420px; margin: auto; padding: 60px 24px; text-align: center; }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 8px; margin-bottom: 20px; border: 1px solid #eee; }
+    .phone-row { display: flex; align-items: center; }
+    .country { display: flex; align-items: center; padding: 12px; font-weight: bold; color: #333; }
+    .divider { width: 1px; height: 24px; background: #e0e0e0; margin: 0 8px; }
+    input { flex: 1; border: none; outline: none; font-size: 16px; padding: 12px 0; }
+    button { width: 100%; padding: 14px; font-size: 16px; border-radius: 30px; border: none; background: #2196F3; color: #fff; cursor: pointer; font-weight: 600; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    #recaptcha-container { margin: 20px 0; display: flex; justify-content: center; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Welcome Back</h2>
+  <p>Enter your phone number to continue</p>
+
+  <div class="card">
+    <div class="phone-row">
+      <div class="country">+91</div>
+      <div class="divider"></div>
+      <input type="tel" id="phone" placeholder="Phone number" maxlength="10">
+    </div>
+  </div>
+
+  <div id="recaptcha-container"></div>
+
+  <button id="sendBtn" disabled>Loading...</button>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAUTZtR_9sM-EXq-AChMtYNh-XBpHXFs3E",
+    authDomain: "kalash2-2bf90.firebaseapp.com",
+    projectId: "kalash2-2bf90",
+    appId: "kalash2-2bf90"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // UNCOMMENT THE LINE BELOW IF TESTING ON LOCALHOST WITHOUT SSL
+  // auth.settings.appVerificationDisabledForTesting = true;
+
+  const sendBtn = document.getElementById("sendBtn");
+  const phoneInput = document.getElementById("phone");
+
+  let recaptchaVerifier;
+
+  // Initialize reCAPTCHA correctly for Firebase v10
+  function initRecaptcha() {
+    try {
+      // Syntax: new RecaptchaVerifier(auth, containerId, params)
+      recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'normal',
+        'callback': (response) => {
+          console.log("reCAPTCHA solved");
+        }
+      });
+
+      recaptchaVerifier.render().then(() => {
+        sendBtn.disabled = false;
+        sendBtn.textContent = "Send OTP";
+      }).catch((error) => {
+        console.error("Render Error:", error);
+        sendBtn.textContent = "Check Connection";
+      });
+    } catch (error) {
+      console.error("Initialization Error:", error);
+    }
+  }
+
+  initRecaptcha();
+
+  sendBtn.addEventListener("click", async () => {
+    const phone = phoneInput.value.trim();
+    
+    if (!/^\d{10}$/.test(phone)) {
+      alert("Please enter a valid 10-digit phone number");
+      return;
+    }
+
+    sendBtn.disabled = true;
+    sendBtn.textContent = "Sending...";
+
+    const phoneNumber = "+91" + phone;
+
+    try {
+      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+      
+      // Save confirmationResult to window so it can be used, 
+      // though for a multi-page app, you'll need a different approach 
+      // (like keeping it on one page or using a global state)
+      window.confirmationResult = confirmationResult;
+      
+      alert("OTP Sent successfully!");
+      
+      // Since confirmationResult cannot be easily stringified into localStorage,
+      // it is best to handle the OTP input on this SAME page by hiding the login UI
+      // and showing an OTP input UI.
+      
+      // For now, redirecting as you requested:
+      localStorage.setItem("pendingPhone", phoneNumber);
+      window.location.href = "otp.html";
+      
+    } catch (err) {
+      console.error("SMS Error:", err);
+      alert("Error: " + err.message);
+      
+      // Reset reCAPTCHA if it fails so user can try again
+      if (recaptchaVerifier) {
+        recaptchaVerifier.render().then(widgetId => {
+            grecaptcha.reset(widgetId);
+        });
+      }
+      
+      sendBtn.disabled = false;
+      sendBtn.textContent = "Send OTP";
+    }
+  });
+</script>
+
+</body>
+</html>

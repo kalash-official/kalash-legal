@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kalash — Trade Ka Insurance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    font-family: Arial, sans-serif;
+  }
+
+  .main-container {
+    text-align: center;
+  }
+
+  .card {
+    width: 250px;
+    height: 240px;
+    border: 2px solid #ddd;
+    border-radius: 16px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    animation: fadeIn 1s ease;
+  }
+
+  .logo {
+    width: 120px;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: pop 0.8s ease forwards;
+    animation-delay: 0.3s;
+  }
+
+  .title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-top: 10px;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: 0.6s;
+  }
+
+  .tagline {
+    font-size: 16px;
+    color: #e74c3c;
+    margin-top: 8px;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: 0.9s;
+  }
+
+  .footer-text {
+    margin-top: 30px;
+    font-size: 18px;
+    color: #7f8c8d;
+    animation: fadeIn 1.5s ease;
+  }
+
+  @keyframes pop {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes fadeInUp {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="main-container">
+  <div class="card">
+    <img src="src/kalash.jpg" class="logo" alt="Kalash Logo">
+    <div class="title">KALASH</div>
+    <div class="tagline">TRADE KA INSURANCE</div>
+  </div>
+  <div class="footer-text">Your Trade Protection Partner</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAUTZtR_9sM-EXq-AChMtYNh-XBpHXFs3E",
+  authDomain: "kalash2-2bf90.firebaseapp.com",
+  projectId: "kalash2-2bf90"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const loginStatus = localStorage.getItem("login_status") || "null";
+
+setTimeout(() => {
+  handleRouting();
+}, 2000);
+
+async function handleRouting() {
+  if (loginStatus === "otp_complete") {
+    const user = auth.currentUser;
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    const q = query(collection(db, "users"), where("number", "==", user.phoneNumber));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    snap.forEach(doc => {
+      const level = parseInt(doc.data().level);
+      if (level === 1) window.location.href = "complete_profile.html";
+      else if (level === 2) window.location.href = "create_pin.html";
+    });
+
+  } else if (loginStatus === "pin_complete") {
+    window.location.href = "pin.html";
+
+  } else if (loginStatus === "profile_complete") {
+    window.location.href = "create_pin.html";
+
+  } else {
+    window.location.href = "authentication.html";
+  }
+}
+</script>
+
+</body>
+</html>
