@@ -39,76 +39,68 @@
 <div class="list" id="list"></div>
 
 <script>
-    // Mock data like arrhistory
-    const arrhistory = [
-        { name: "Company One", profit: 250, us_did: "US123" },
-        { name: "Company Two", profit: -120, us_did: "US456" },
-        { name: "Company Three", profit: 800, us_did: "US789" }
-    ];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // Save one example into localStorage
-    localStorage.setItem("us_did", arrhistory[0].us_did);
+const firebaseConfig = {
+  apiKey: "AIzaSyAUTZtR_9sM-EXq-AChMtYNh-XBpHXFs3E",
+  authDomain: "kalash2-2bf90.firebaseapp.com",
+  projectId: "kalash2-2bf90",
+  storageBucket: "kalash2-2bf90.firebasestorage.app",
+  messagingSenderId: "462798382911",
+  appId: "1:462798382911:web:0cb93d05089de80dd3d58a"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    const list = document.getElementById("list");
+const list = document.getElementById("list");
+const usDid = localStorage.getItem("us_did");
 
-    arrhistory.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card";
+if (!usDid) {
+  alert("No us_did in localStorage");
+  throw new Error("Missing us_did");
+}
 
-        card.innerHTML = `
-            <div class="row">
-                <div class="company">${item.name}</div>
-                <div class="price">₹ ${item.profit}</div>
-            </div>
+const snap = await getDocs(collection(db, "users_setting", usDid, "trade_history"));
 
-            <div class="divider"></div>
+snap.forEach(doc => {
+  const data = doc.data();
+  const resultType = data.result_type || data.result || "unknown";
 
-            <div class="row">
-                <div>Profit</div>
-                <div class="profit-value">${item.profit}</div>
-            </div>
+  // Store in localStorage
+  localStorage.setItem(`trade_${doc.id}_result`, resultType);
+  localStorage.setItem(`trade_${doc.id}_us_did`, usDid);
 
-            <div class="row dist">
-                <div class="dist-text">Profit Distribution</div>
-                <div>✔</div>
-            </div>
+  const card = document.createElement("div");
+  card.className = "card";
 
-            <div class="profiles">
-                <div class="profile">
-                    <div class="avatar"><img src="profile.png"><span class="badge">✔</span></div>
-                    <div class="amount">₹ ---</div>
-                    <div class="status">Pending</div>
-                    <button class="btn">Settle</button>
-                </div>
-                <div class="profile">
-                    <div class="avatar"><img src="profile.png"><span class="badge">✔</span></div>
-                    <div class="amount">₹ ---</div>
-                    <div class="status">Pending</div>
-                    <button class="btn">Settle</button>
-                </div>
-                <div class="profile">
-                    <div class="avatar"><img src="profile.png"><span class="badge">✔</span></div>
-                    <div class="amount">₹ ---</div>
-                    <div class="status">Pending</div>
-                    <button class="btn">Settle</button>
-                </div>
-            </div>
+  card.innerHTML = `
+    <div class="row">
+        <div class="company">${data.name || "Company"}</div>
+        <div class="price">${resultType}</div>
+    </div>
 
-            <div class="uid">UID: ${item.us_did}</div>
-        `;
+    <div class="divider"></div>
 
-        card.addEventListener("click", () => {
-            alert("Clicked us_did: " + item.us_did);
-        });
+    <div class="row">
+        <div>Result</div>
+        <div class="profit-value">${resultType}</div>
+    </div>
 
-        list.appendChild(card);
-    });
+    <div class="profiles">
+      <div class="profile">
+        <div class="avatar"><img src="profile.png"><span class="badge">✔</span></div>
+        <div class="status">${resultType}</div>
+      </div>
+    </div>
 
-    // Read previously stored UID
-    const storedUid = localStorage.getItem("us_did");
-    if (storedUid) {
-        console.log("Stored UID:", storedUid);
-    }
+    <div class="uid">UID: ${usDid}</div>
+  `;
+
+  card.addEventListener("click", () => alert("Clicked trade " + doc.id + " → " + resultType));
+
+  list.appendChild(card);
+});
 </script>
 
 </body>
