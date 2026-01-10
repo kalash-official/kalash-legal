@@ -1,229 +1,115 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Profit Card</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f3f3f3;
-            padding: 20px;
-        }
+<meta charset="UTF-8">
+<title>Profit Card</title>
+<style>
+    body { font-family: Arial,sans-serif; background:#f3f3f3; padding:20px; }
+    .list { display:flex; flex-direction:column; gap:16px; }
 
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 16px;
-            max-width: 420px;
-            margin: auto;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
+    .card {
+        background:white;
+        border-radius:12px;
+        padding:16px;
+        max-width:420px;
+        margin:auto;
+        box-shadow:0 2px 6px rgba(0,0,0,0.15);
+        cursor:pointer;
+    }
 
-        .row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header .company {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .header .price {
-            color: #2e7d32;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .divider {
-            height: 1px;
-            background: #e0e0e0;
-            margin: 12px 0;
-        }
-
-        .profit-value {
-            color: #4caf50;
-            font-weight: bold;
-        }
-
-        .dist {
-            margin-top: 12px;
-        }
-
-        .dist-text {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .tick {
-            color: #4caf50;
-            font-size: 14px;
-        }
-
-        .profiles {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 12px;
-            padding: 12px;
-            background: #fafafa;
-            border-radius: 8px;
-        }
-
-        .profile {
-            text-align: center;
-            flex: 1;
-        }
-
-        .avatar {
-            position: relative;
-            display: inline-block;
-        }
-
-        .avatar img {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-        }
-
-        .badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: white;
-            border-radius: 50%;
-            padding: 2px 4px;
-            font-size: 10px;
-            color: #4caf50;
-            border: 1px solid #ddd;
-        }
-
-        .amount {
-            color: #2e7d32;
-            font-size: 13px;
-            margin-top: 6px;
-        }
-
-        .status {
-            margin-top: 4px;
-            font-size: 12px;
-            color: #444;
-        }
-
-        .btn {
-            margin-top: 6px;
-            background: #4caf50;
-            border: none;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 18px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background: #43a047;
-        }
-
-        .hint {
-            margin-top: 12px;
-            font-size: 13px;
-            text-align: center;
-            color: #777;
-        }
-
-        .uid {
-            margin-top: 12px;
-            font-weight: bold;
-            color: #666;
-        }
-    </style>
+    .row { display:flex; justify-content:space-between; align-items:center; }
+    .company { font-size:18px; font-weight:bold; }
+    .price { color:#2e7d32; font-weight:bold; }
+    .divider { height:1px; background:#e0e0e0; margin:12px 0; }
+    .profit-value { color:#4caf50; font-weight:bold; }
+    .dist-text { font-weight:bold; font-size:16px; }
+    .profiles { display:flex; justify-content:space-between; margin-top:12px; padding:12px; background:#fafafa; border-radius:8px; }
+    .profile { text-align:center; flex:1; }
+    .avatar { position:relative; display:inline-block; }
+    .avatar img { width:48px; height:48px; border-radius:50%; }
+    .badge { position:absolute; top:-4px; right:-4px; background:white; border-radius:50%; padding:2px 4px; font-size:10px; color:#4caf50; border:1px solid #ddd; }
+    .amount { color:#2e7d32; font-size:13px; margin-top:6px; }
+    .status { font-size:12px; margin-top:4px; }
+    .btn { margin-top:6px; background:#4caf50; border:none; color:white; padding:6px 14px; border-radius:18px; font-size:12px; }
+    .uid { margin-top:12px; font-weight:bold; color:#666; }
+</style>
 </head>
 <body>
 
-<div class="card">
+<div class="list" id="list"></div>
 
-    <!-- HEADER -->
-    <div class="row header">
-        <div class="company">Company Name</div>
-        <div class="price">₹ ---</div>
-    </div>
+<script>
+    // Mock data like arrhistory
+    const arrhistory = [
+        { name: "Company One", profit: 250, us_did: "US123" },
+        { name: "Company Two", profit: -120, us_did: "US456" },
+        { name: "Company Three", profit: 800, us_did: "US789" }
+    ];
 
-    <div class="divider"></div>
+    // Save one example into localStorage
+    localStorage.setItem("us_did", arrhistory[0].us_did);
 
-    <!-- ENTRY EXIT -->
-    <div class="row">
-        <div class="entry">Entry: ₹ ---</div>
-        <div class="exit">Exit: ₹ ---</div>
-    </div>
+    const list = document.getElementById("list");
 
-    <div class="divider"></div>
+    arrhistory.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
 
-    <!-- PROFIT -->
-    <div class="row">
-        <div>Profit</div>
-        <div class="profit-value">₹ ---</div>
-    </div>
-
-    <!-- DISTRIBUTION -->
-    <div class="row dist">
-        <div class="dist-text">Profit Distribution</div>
-        <div class="tick">✔</div>
-    </div>
-
-    <!-- PROFILES -->
-    <div class="profiles">
-
-        <div class="profile">
-            <div class="avatar">
-                <img src="profile.png" alt="">
-                <span class="badge">✔</span>
+        card.innerHTML = `
+            <div class="row">
+                <div class="company">${item.name}</div>
+                <div class="price">₹ ${item.profit}</div>
             </div>
-            <div class="amount">₹ ---</div>
-            <div class="status">Pending</div>
-            <button class="btn">Settle</button>
-        </div>
 
-        <div class="profile">
-            <div class="avatar">
-                <img src="profile.png" alt="">
-                <span class="badge">✔</span>
+            <div class="divider"></div>
+
+            <div class="row">
+                <div>Profit</div>
+                <div class="profit-value">${item.profit}</div>
             </div>
-            <div class="amount">₹ ---</div>
-            <div class="status">Pending</div>
-            <button class="btn">Settle</button>
-        </div>
 
-        <div class="profile">
-            <div class="avatar">
-                <img src="profile.png" alt="">
-                <span class="badge">✔</span>
+            <div class="row dist">
+                <div class="dist-text">Profit Distribution</div>
+                <div>✔</div>
             </div>
-            <div class="amount">₹ ---</div>
-            <div class="status">Pending</div>
-            <button class="btn">Settle</button>
-        </div>
 
-    </div>
+            <div class="profiles">
+                <div class="profile">
+                    <div class="avatar"><img src="profile.png"><span class="badge">✔</span></div>
+                    <div class="amount">₹ ---</div>
+                    <div class="status">Pending</div>
+                    <button class="btn">Settle</button>
+                </div>
+                <div class="profile">
+                    <div class="avatar"><img src="profile.png"><span class="badge">✔</span></div>
+                    <div class="amount">₹ ---</div>
+                    <div class="status">Pending</div>
+                    <button class="btn">Settle</button>
+                </div>
+                <div class="profile">
+                    <div class="avatar"><img src="profile.png"><span class="badge">✔</span></div>
+                    <div class="amount">₹ ---</div>
+                    <div class="status">Pending</div>
+                    <button class="btn">Settle</button>
+                </div>
+            </div>
 
-    <div class="hint">Tap Settle to complete partner payment</div>
-    <div class="uid">UID: ABC123456</div>
+            <div class="uid">UID: ${item.us_did}</div>
+        `;
 
-</div>
+        card.addEventListener("click", () => {
+            alert("Clicked us_did: " + item.us_did);
+        });
 
-    <script>
+        list.appendChild(card);
+    });
+
     // Read previously stored UID
     const storedUid = localStorage.getItem("us_did");
-
     if (storedUid) {
-        alert("Stored UID from localStorage: " + storedUid);
-    } else {
-        alert("No UID found in localStorage");
+        console.log("Stored UID:", storedUid);
     }
 </script>
-
 
 </body>
 </html>
