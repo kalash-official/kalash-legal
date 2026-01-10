@@ -118,7 +118,7 @@
 <!-- Firebase logic added below -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAUTZtR_9sM-EXq-AChMtYNh-XBpHXFs3E",
@@ -138,14 +138,21 @@ window.loginUser = async function () {
     return;
   }
 
-  const snap = await getDoc(doc(db, "users_setting", phone));
+  const q = query(
+    collection(db, "users_setting"),
+    where("number", "==", phone)
+  );
 
-  if (!snap.exists()) {
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) {
     alert("User not found");
     return;
   }
 
-  if (snap.data().password !== pass) {
+  const userDoc = snapshot.docs[0].data();
+
+  if (userDoc.password !== pass) {
     alert("Wrong password");
     return;
   }
@@ -153,6 +160,7 @@ window.loginUser = async function () {
   window.location.href = "history.html";
 };
 </script>
+
 
 </body>
 </html>
