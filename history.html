@@ -50,6 +50,7 @@ const firebaseConfig = {
   messagingSenderId: "462798382911",
   appId: "1:462798382911:web:0cb93d05089de80dd3d58a"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -61,47 +62,56 @@ if (!usDid) {
   throw new Error("Missing us_did");
 }
 
-const snap = await getDocs(collection(db, "users_setting", usDid, "trade_history"));
+async function loadTrades() {
+  const snap = await getDocs(collection(db, "users_setting", usDid, "trade_history"));
 
-snap.forEach(doc => {
-  const data = doc.data();
-  const resultType = data.result_type || data.result || "unknown";
+  if (snap.empty) {
+    list.innerHTML = "<p style='text-align:center;color:#777;'>No trade history found</p>";
+    return;
+  }
 
-  // Store in localStorage
-  localStorage.setItem(`trade_${doc.id}_result`, resultType);
-  localStorage.setItem(`trade_${doc.id}_us_did`, usDid);
+  snap.forEach(doc => {
+    const data = doc.data();
+    const resultType = data.result_type || data.result || "unknown";
 
-  const card = document.createElement("div");
-  card.className = "card";
+    localStorage.setItem(`trade_${doc.id}_result`, resultType);
+    localStorage.setItem(`trade_${doc.id}_us_did`, usDid);
 
-  card.innerHTML = `
-    <div class="row">
-        <div class="company">${data.name || "Company"}</div>
-        <div class="price">${resultType}</div>
-    </div>
+    const card = document.createElement("div");
+    card.className = "card";
 
-    <div class="divider"></div>
-
-    <div class="row">
-        <div>Result</div>
-        <div class="profit-value">${resultType}</div>
-    </div>
-
-    <div class="profiles">
-      <div class="profile">
-        <div class="avatar"><img src="profile.png"><span class="badge">✔</span></div>
-        <div class="status">${resultType}</div>
+    card.innerHTML = `
+      <div class="row">
+          <div class="company">${data.name || "Company"}</div>
+          <div class="price">${resultType}</div>
       </div>
-    </div>
 
-    <div class="uid">UID: ${usDid}</div>
-  `;
+      <div class="divider"></div>
 
-  card.addEventListener("click", () => alert("Clicked trade " + doc.id + " → " + resultType));
+      <div class="row">
+          <div>Result</div>
+          <div class="profit-value">${resultType}</div>
+      </div>
 
-  list.appendChild(card);
-});
+      <div class="profiles">
+        <div class="profile">
+          <div class="avatar"><img src="profile.png"><span class="badge">✔</span></div>
+          <div class="status">${resultType}</div>
+        </div>
+      </div>
+
+      <div class="uid">UID: ${usDid}</div>
+    `;
+
+    card.addEventListener("click", () => alert("Clicked trade " + doc.id + " → " + resultType));
+
+    list.appendChild(card);
+  });
+}
+
+loadTrades();
 </script>
+
 
 </body>
 </html>
