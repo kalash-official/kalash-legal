@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalash Lock</title>
-
     <style>
         * {
             box-sizing: border-box;
@@ -14,23 +13,13 @@
         body {
             margin: 0;
             height: 100vh;
-            background: url("graphic.png") no-repeat center center fixed;
-            background-size: cover;
+            background: linear-gradient(180deg, #f9f4ec, #ffffff);
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.85);
-            z-index: 0;
-        }
-
         .card {
-            position: relative;
-            z-index: 1;
             background: white;
             padding: 28px 24px;
             border-radius: 18px;
@@ -44,8 +33,6 @@
             width: 140px;
             max-width: 70%;
             margin-bottom: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         h2 {
@@ -100,7 +87,6 @@
             .card {
                 padding: 22px 18px;
             }
-
             .logo {
                 width: 120px;
             }
@@ -109,25 +95,64 @@
 </head>
 <body>
 
-<div class="overlay"></div>
-
 <div class="card">
     <img src="kalash.jpg" alt="Kalash Logo" class="logo">
 
+    <h2>Secure Access</h2>
+
     <div class="input-group">
-        <input type="tel" placeholder="Mobile Number" required>
+        <input id="phone" type="tel" placeholder="Mobile Number" required>
     </div>
 
     <div class="input-group">
-        <input type="password" placeholder="Password" required>
+        <input id="password" type="password" placeholder="Password" required>
     </div>
 
-    <button class="btn">Unlock</button>
+    <button class="btn" onclick="loginUser()">Unlock</button>
 
     <div class="footer">
-        Trade ka insurance
+        Trade ka insurance — Secure system
     </div>
 </div>
+
+<!-- Firebase logic added below -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAUTZtR_9sM-EXq-AChMtYNh-XBpHXFs3E",
+  authDomain: "kalash2-2bf90.firebaseapp.com",
+  projectId: "kalash2-2bf90",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.loginUser = async function () {
+  const phone = document.getElementById("phone").value.trim();
+  const pass = document.getElementById("password").value.trim();
+
+  if (!phone || !pass) {
+    alert("Enter phone and password");
+    return;
+  }
+
+  const snap = await getDoc(doc(db, "users_setting", phone));
+
+  if (!snap.exists()) {
+    alert("User not found");
+    return;
+  }
+
+  if (snap.data().password !== pass) {
+    alert("Wrong password");
+    return;
+  }
+
+  window.location.href = "history.html";
+};
+</script>
 
 </body>
 </html>
