@@ -152,7 +152,7 @@ window.loginUser = async function () {
 
   const userDoc = snapshot.docs[0].data();
 
-  if (userDoc.password !== pass) {
+  if (userDoc.history_pass !== pass) {
     alert("Wrong password");
     return;
   }
