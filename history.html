@@ -2,79 +2,97 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Profit Card</title>
+<title>Trade History</title>
 
 <style>
 body {
   font-family: Arial, sans-serif;
   background:#f3f3f3;
-  padding:20px;
+  padding:16px;
 }
 
 .list {
   display:flex;
   flex-direction:column;
-  gap:16px;
+  gap:12px;
 }
 
 .card {
   background:white;
-  border-radius:14px;
+  border-radius:12px;
   padding:16px;
-  max-width:420px;
+  max-width:480px;
   margin:auto;
-  box-shadow:0 2px 6px rgba(0,0,0,0.15);
-  cursor:pointer;
-  transition:.2s ease;
-}
-
-.card:hover {
-  transform:translateY(-2px);
-  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  box-shadow:0 2px 6px rgba(0,0,0,0.12);
 }
 
 .row {
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:8px;
 }
 
 .company {
-  font-size:10px;
-  font-weight:600;
-  max-width:65%;
+  font-size:18px;
+  font-weight:700;
+  max-width:70%;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.result-chip {
-  padding:4px 12px;
-  border-radius:14px;
-  font-size:12px;
+.top-right {
+  color:#4CAF50;
   font-weight:600;
-  background:#e8f5e9;
-  color:#2e7d32;
 }
 
 .divider {
   height:1px;
-  background:#e0e0e0;
+  background:#eee;
   margin:12px 0;
+}
+
+.muted {
+  color:#666;
+  font-size:13px;
+}
+
+.label {
+  color:#333;
+  font-size:14px;
+}
+
+.profit {
+  font-size:14px;
+  font-weight:bold;
+  color:#4CAF50;
+}
+
+.dist {
+  margin-top:12px;
+  font-size:16px;
+  font-weight:600;
+  display:flex;
+  justify-content:space-between;
+}
+
+.tick {
+  color:#4CAF50;
+  font-size:18px;
 }
 
 .profiles {
   display:flex;
-  justify-content:center;
-  margin-top:8px;
+  justify-content:space-between;
+  margin-top:12px;
   padding:12px;
   background:#fafafa;
-  border-radius:10px;
+  border-radius:8px;
 }
 
 .profile {
   text-align:center;
+  flex:1;
 }
 
 .avatar {
@@ -96,21 +114,45 @@ body {
   border-radius:50%;
   padding:2px 4px;
   font-size:10px;
-  color:#4caf50;
+  color:#4CAF50;
   border:1px solid #ddd;
+  display:none;
+}
+
+.amount {
+  color:#4CAF50;
+  font-size:13px;
+  margin-top:6px;
 }
 
 .status {
-  font-size:13px;
+  font-size:12px;
+  margin-top:4px;
+}
+
+.btn {
   margin-top:6px;
-  font-weight:600;
+  background:#4CAF50;
+  border:none;
+  color:white;
+  padding:6px 14px;
+  border-radius:18px;
+  font-size:12px;
+  display:none;
+}
+
+.hint {
+  margin-top:12px;
+  text-align:center;
+  color:#777;
+  font-size:13px;
 }
 
 .uid {
-  font-size:12px;
-  margin-top:10px;
-  color:#777;
-  text-align:center;
+  margin-top:12px;
+  color:#666;
+  font-weight:bold;
+  font-size:13px;
 }
 </style>
 </head>
@@ -134,57 +176,66 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 const list = document.getElementById("list");
 const usDid = localStorage.getItem("us_did");
-
-if (!usDid) {
-  alert("No us_did in localStorage");
-  throw new Error("Missing us_did");
-}
 
 async function loadTrades() {
   const snap = await getDocs(collection(db, "users_setting", usDid, "trade_history"));
 
   if (snap.empty) {
-    list.innerHTML = "<p style='text-align:center;color:#777;'>No trade history found</p>";
+    list.innerHTML = "<p style='text-align:center;color:#777;'>No trades found</p>";
     return;
   }
 
   snap.forEach(doc => {
-    const data = doc.data();
-    const resultType = data.result_type || data.result || "unknown";
+    const d = doc.data();
 
     const card = document.createElement("div");
     card.className = "card";
 
     card.innerHTML = `
       <div class="row">
-        <div class="company" title="${data.name || "Company"}">${data.name || "Company"}</div>
-        <div class="result-chip">${resultType}</div>
-      </div>
-
-       <div class="row">
-        <div class="company" title="profit">${data.name || "Company"}</div>
-        <div class="result-chip">${resultType}</div>
+        <div class="company">${d.name || "Company"}</div>
+        <div class="top-right">₹ ${d.top || "---"}</div>
       </div>
 
       <div class="divider"></div>
 
-      <div class="profiles">
-        <div class="profile">
-          <div class="avatar">
-            <img src="profile.png">
-            <span class="badge">✔</span>
-          </div>
-          <div class="status">${resultType}</div>
-        </div>
+      <div class="row">
+        <div class="muted">Entry: ₹ ${d.entry || "---"}</div>
+        <div class="muted">Exit: ₹ ${d.exit || "---"}</div>
       </div>
 
+      <div class="divider"></div>
+
+      <div class="row">
+        <div class="label">Profit</div>
+        <div class="profit">₹ ${d.profit || "---"}</div>
+      </div>
+
+      <div class="dist">
+        <div>Profit Distribution</div>
+        <span class="tick">✔</span>
+      </div>
+
+      <div class="profiles">
+        ${[1,2,3].map(i => `
+          <div class="profile">
+            <div class="avatar">
+              <img src="profile.png">
+              <span class="badge" style="display:${d['tick'+i] ? 'inline' : 'none'}">✔</span>
+            </div>
+            <div class="amount">₹ ${d['amount'+i] || "---"}</div>
+            <div class="status">${d['status'+i] || "Pending"}</div>
+            <button class="btn" style="display:${d['settle'+i] ? 'inline-block' : 'none'}">Settle</button>
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="hint">Tap Settle to complete partner payment</div>
       <div class="uid">UID: ${usDid}</div>
     `;
 
-    card.addEventListener("click", () => alert("Clicked trade " + doc.id + " → " + resultType));
     list.appendChild(card);
   });
 }
