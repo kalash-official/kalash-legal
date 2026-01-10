@@ -190,7 +190,8 @@ async function loadTrades() {
   snap.forEach(doc => {
     const d = doc.data();
 
-    const card = document.createElement("div");
+    if (d.result_type === "cancel") {
+        const card = document.createElement("div");
     card.className = "card";
 
     card.innerHTML = `
@@ -235,6 +236,13 @@ async function loadTrades() {
       <div class="hint">Tap Settle to complete partner payment</div>
       <div class="uid">UID: ${usDid}</div>
     `;
+    } else if (resultType === "profit" || resultType === "positive") {
+      
+    }else if (resultType === "profit" || resultType === "positive") {
+      isPositive = true;
+    } else {
+      isPositive = false;
+    }
 
     list.appendChild(card);
   });
