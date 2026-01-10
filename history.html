@@ -213,5 +213,17 @@
 
 </div>
 
+    <script>
+    // Read previously stored UID
+    const storedUid = localStorage.getItem("user_uid");
+
+    if (storedUid) {
+        alert("Stored UID from localStorage: " + storedUid);
+    } else {
+        alert("No UID found in localStorage");
+    }
+</script>
+
+
 </body>
 </html>
