@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalash Lock</title>
+
     <style>
         * {
             box-sizing: border-box;
@@ -13,13 +14,23 @@
         body {
             margin: 0;
             height: 100vh;
-            background: linear-gradient(180deg, #f9f4ec, #ffffff);
+            background: url("graphic.png") no-repeat center center fixed;
+            background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 0;
+        }
+
         .card {
+            position: relative;
+            z-index: 1;
             background: white;
             padding: 28px 24px;
             border-radius: 18px;
@@ -33,6 +44,8 @@
             width: 140px;
             max-width: 70%;
             margin-bottom: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         h2 {
@@ -87,6 +100,7 @@
             .card {
                 padding: 22px 18px;
             }
+
             .logo {
                 width: 120px;
             }
@@ -95,8 +109,9 @@
 </head>
 <body>
 
+<div class="overlay"></div>
+
 <div class="card">
-    <!-- Kalash Logo -->
     <img src="kalash.jpg" alt="Kalash Logo" class="logo">
 
     <h2>Secure Access</h2>
