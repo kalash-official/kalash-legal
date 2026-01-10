@@ -150,15 +150,29 @@ window.loginUser = async function () {
     return;
   }
 
-  const userDoc = snapshot.docs[0].data();
+  const userSnapshot = snapshot.docs[0];
+  const userDoc = userSnapshot.data();
+  const userId = userSnapshot.id;
 
   if (userDoc.history_pass !== pass) {
     alert("Wrong password");
     return;
   }
-    
-window.location.replace("history.html");
+
+  // Save document id locally
+  localStorage.setItem("user_setting_id", userId);
+
+  // Redirect and prevent back
+  window.location.replace("history.html");
 };
+</script>
+
+<script>
+  // Prevent browser back to login page
+  history.pushState(null, null, location.href);
+  window.onpopstate = function () {
+    history.go(1);
+  };
 </script>
 
 
