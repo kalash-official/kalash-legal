@@ -3,37 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <title>Profit Card</title>
+
 <style>
-    body { font-family: Arial,sans-serif; background:#f3f3f3; padding:20px; }
-    .list { display:flex; flex-direction:column; gap:16px; }
+body {
+  font-family: Arial, sans-serif;
+  background:#f3f3f3;
+  padding:20px;
+}
 
-    .card {
-        background:white;
-        border-radius:12px;
-        padding:16px;
-        max-width:420px;
-        margin:auto;
-        box-shadow:0 2px 6px rgba(0,0,0,0.15);
-        cursor:pointer;
-    }
+.list {
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
 
-    .row { display:flex; justify-content:space-between; align-items:center; }
-    .company { font-size:18px; font-weight:bold; }
-    .price { color:#2e7d32; font-weight:bold; }
-    .divider { height:1px; background:#e0e0e0; margin:12px 0; }
-    .profit-value { color:#4caf50; font-weight:bold; }
-    .dist-text { font-weight:bold; font-size:16px; }
-    .profiles { display:flex; justify-content:space-between; margin-top:12px; padding:12px; background:#fafafa; border-radius:8px; }
-    .profile { text-align:center; flex:1; }
-    .avatar { position:relative; display:inline-block; }
-    .avatar img { width:48px; height:48px; border-radius:50%; }
-    .badge { position:absolute; top:-4px; right:-4px; background:white; border-radius:50%; padding:2px 4px; font-size:10px; color:#4caf50; border:1px solid #ddd; }
-    .amount { color:#2e7d32; font-size:13px; margin-top:6px; }
-    .status { font-size:12px; margin-top:4px; }
-    .btn { margin-top:6px; background:#4caf50; border:none; color:white; padding:6px 14px; border-radius:18px; font-size:12px; }
-    .uid { margin-top:12px; font-weight:bold; color:#666; }
+.card {
+  background:white;
+  border-radius:14px;
+  padding:16px;
+  max-width:420px;
+  margin:auto;
+  box-shadow:0 2px 6px rgba(0,0,0,0.15);
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.card:hover {
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+.row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+
+.company {
+  font-size:16px;
+  font-weight:600;
+  max-width:65%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.result-chip {
+  padding:4px 12px;
+  border-radius:14px;
+  font-size:12px;
+  font-weight:600;
+  background:#e8f5e9;
+  color:#2e7d32;
+}
+
+.divider {
+  height:1px;
+  background:#e0e0e0;
+  margin:12px 0;
+}
+
+.profiles {
+  display:flex;
+  justify-content:center;
+  margin-top:8px;
+  padding:12px;
+  background:#fafafa;
+  border-radius:10px;
+}
+
+.profile {
+  text-align:center;
+}
+
+.avatar {
+  position:relative;
+  display:inline-block;
+}
+
+.avatar img {
+  width:48px;
+  height:48px;
+  border-radius:50%;
+}
+
+.badge {
+  position:absolute;
+  top:-4px;
+  right:-4px;
+  background:white;
+  border-radius:50%;
+  padding:2px 4px;
+  font-size:10px;
+  color:#4caf50;
+  border:1px solid #ddd;
+}
+
+.status {
+  font-size:13px;
+  margin-top:6px;
+  font-weight:600;
+}
+
+.uid {
+  font-size:12px;
+  margin-top:10px;
+  color:#777;
+  text-align:center;
+}
 </style>
 </head>
+
 <body>
 
 <div class="list" id="list"></div>
@@ -74,28 +155,23 @@ async function loadTrades() {
     const data = doc.data();
     const resultType = data.result_type || data.result || "unknown";
 
-    localStorage.setItem(`trade_${doc.id}_result`, resultType);
-    localStorage.setItem(`trade_${doc.id}_us_did`, usDid);
-
     const card = document.createElement("div");
     card.className = "card";
 
     card.innerHTML = `
       <div class="row">
-          <div class="company">${data.name || "Company"}</div>
-          <div class="price">${resultType}</div>
+        <div class="company" title="${data.name || "Company"}">${data.name || "Company"}</div>
+        <div class="result-chip">${resultType}</div>
       </div>
 
       <div class="divider"></div>
 
-      <div class="row">
-          <div>Result</div>
-          <div class="profit-value">${resultType}</div>
-      </div>
-
       <div class="profiles">
         <div class="profile">
-          <div class="avatar"><img src="profile.png"><span class="badge">✔</span></div>
+          <div class="avatar">
+            <img src="profile.png">
+            <span class="badge">✔</span>
+          </div>
           <div class="status">${resultType}</div>
         </div>
       </div>
@@ -104,14 +180,12 @@ async function loadTrades() {
     `;
 
     card.addEventListener("click", () => alert("Clicked trade " + doc.id + " → " + resultType));
-
     list.appendChild(card);
   });
 }
 
 loadTrades();
 </script>
-
 
 </body>
 </html>
