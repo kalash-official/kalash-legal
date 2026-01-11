@@ -10,19 +10,22 @@ body { font-family: Arial,sans-serif; background:#f3f3f3; padding:16px; }
 .card { background:white; border-radius:12px; padding:16px; max-width:480px; margin:auto; box-shadow:0 2px 6px rgba(0,0,0,0.12); }
 .row { display:flex; justify-content:space-between; align-items:center; }
 .company { font-size:18px; font-weight:700; max-width:70%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.top-right { color:#4CAF50; font-weight:600; }
+.top-right { font-weight:600; }
+.green { color:#4CAF50; }
+.red { color:#E53935; }
+.gray { color:#888; }
 .divider { height:1px; background:#eee; margin:12px 0; }
 .muted { color:#666; font-size:13px; }
 .label { color:#333; font-size:14px; }
-.profit { font-size:14px; font-weight:bold; color:#4CAF50; }
+.profit { font-size:14px; font-weight:bold; }
 .dist { margin-top:12px; font-size:16px; font-weight:600; display:flex; justify-content:space-between; }
-.tick { color:#4CAF50; font-size:18px; }
+.tick { font-size:18px; }
 .profiles { display:flex; justify-content:space-between; margin-top:12px; padding:12px; background:#fafafa; border-radius:8px; }
 .profile { text-align:center; flex:1; }
 .avatar { position:relative; display:inline-block; }
 .avatar img { width:48px; height:48px; border-radius:50%; }
-.badge { position:absolute; top:-4px; right:-4px; background:white; border-radius:50%; padding:2px 4px; font-size:10px; color:#4CAF50; border:1px solid #ddd; display:none; }
-.amount { color:#4CAF50; font-size:13px; margin-top:6px; }
+.badge { position:absolute; top:-4px; right:-4px; background:white; border-radius:50%; padding:2px 4px; font-size:10px; border:1px solid #ddd; display:none; }
+.amount { font-size:13px; margin-top:6px; }
 .status { font-size:12px; margin-top:4px; }
 .btn { margin-top:6px; background:#4CAF50; border:none; color:white; padding:6px 14px; border-radius:18px; font-size:12px; display:none; }
 .hint { margin-top:12px; text-align:center; color:#777; font-size:13px; }
@@ -31,7 +34,6 @@ body { font-family: Arial,sans-serif; background:#f3f3f3; padding:16px; }
 </head>
 
 <body>
-
 <div class="list" id="list"></div>
 
 <script type="module">
@@ -53,11 +55,6 @@ const list = document.getElementById("list");
 const usDid = localStorage.getItem("us_did");
 
 async function loadTrades() {
-  if (!usDid) {
-    list.innerHTML = "<p style='text-align:center;color:red;'>User ID missing</p>";
-    return;
-  }
-
   const snap = await getDocs(collection(db, "users_setting", usDid, "trade_history"));
 
   if (snap.empty) {
@@ -67,49 +64,54 @@ async function loadTrades() {
 
   snap.forEach(doc => {
     const d = doc.data();
-    const type = d.result_type || "";
+    const type = d.result_type;
 
-    let label = "Trade";
+    let html = "";
 
-    if (type === "cancel") label = "Cancelled Trade";
-    else if (type === "positive") label = "Profit Trade";
-    else if (type === "negative" || type === "incomplete negative") label = "Loss Trade";
-    else if (type === "incomplete positive") label = "Incomplete Profit Trade";
+    if (type === "cancel") html = buildCardCancel(d);
+    else if (type === "positive") html = buildCardPositive(d);
+    else if (type === "negative" || type === "incomplete negative") html = buildCardNegative(d);
+    else if (type === "incomplete positive") html = buildCardIncompletePositive(d);
+    else html = buildCardDefault(d);
 
     const card = document.createElement("div");
     card.className = "card";
-    card.innerHTML = buildCard(d, label);
-
+    card.innerHTML = html;
     list.appendChild(card);
   });
 }
 
-function buildCard(d, label) {
+function buildHeader(d, colorClass) {
   return `
     <div class="row">
       <div class="company">${d.name || "Company"}</div>
-      <div class="top-right">₹ ${d.result ?? "---"}</div>
+      <div class="top-right ${colorClass}">₹ ${d.result || "---"}</div>
     </div>
+  `;
+}
 
+function buildCommon(d, label, colorClass) {
+  return `
+    ${buildHeader(d, colorClass)}
     <div class="divider"></div>
-
     <div class="row">
-      <div class="muted">Entry: ₹ ${d.entry_at ?? "---"}</div>
-      <div class="muted">Exit: ₹ ${d.exit_at ?? "---"}</div>
+      <div class="muted">Entry: ₹ ${d.entry_at || "---"}</div>
+      <div class="muted">Exit: ₹ ${d.exit_at || "---"}</div>
     </div>
-
     <div class="divider"></div>
-
     <div class="row">
       <div class="label">${label}</div>
-      <div class="profit">₹ ${d.profit ?? "---"}</div>
+      <div class="profit ${colorClass}">₹ ${d.profit || "---"}</div>
     </div>
+  `;
+}
 
+function buildPartners(d) {
+  return `
     <div class="dist">
       <div>Profit Distribution</div>
-      <span class="tick">✔</span>
+      <span class="tick green">✔</span>
     </div>
-
     <div class="profiles">
       ${[1,2,3].map(i => `
         <div class="profile">
@@ -117,20 +119,41 @@ function buildCard(d, label) {
             <img src="profile.png">
             <span class="badge" style="display:${d['tick'+i] ? 'inline' : 'none'}">✔</span>
           </div>
-          <div class="amount">₹ ${d['amount'+i] ?? "---"}</div>
-          <div class="status">${d['status'+i] ?? "Pending"}</div>
+          <div class="amount">₹ ${d['amount'+i] || "---"}</div>
+          <div class="status">${d['status'+i] || "Pending"}</div>
           <button class="btn" style="display:${d['settle'+i] ? 'inline-block' : 'none'}">Settle</button>
         </div>
       `).join("")}
     </div>
-
     <div class="hint">Tap on number to chat direct with your partner</div>
     <div class="uid">UID: ${usDid}</div>
   `;
 }
 
+function buildCardPositive(d) {
+  return buildCommon(d, "Profit", "green") + buildPartners(d);
+}
+
+function buildCardNegative(d) {
+  return buildCommon(d, "Loss", "red") + buildPartners(d);
+}
+
+function buildCardCancel(d) {
+  return buildCommon(d, "Cancelled", "gray") + `
+    <div class="hint">This trade was cancelled</div>
+    <div class="uid">UID: ${usDid}</div>
+  `;
+}
+
+function buildCardIncompletePositive(d) {
+  return buildCommon(d, "Incomplete Profit", "green") + buildPartners(d);
+}
+
+function buildCardDefault(d) {
+  return buildCommon(d, "Trade", "gray") + buildPartners(d);
+}
+
 loadTrades();
 </script>
-
 </body>
 </html>
