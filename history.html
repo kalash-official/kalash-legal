@@ -103,29 +103,38 @@ function buildCardPositive(d) {
 /* NEGATIVE */
 function buildCardNegative(d) {
   return `
-    <div class="row">
-      <div class="company">${d.name || "Company"}</div>
-      <div class="top-right red">${d.result || "---"}</div>
-    </div>
-    <div class="divider"></div>
-    <div class="row">
-      <div class="muted">Entry: ${d.entry_at || "---"}</div>
-      <div class="muted">Exit: ${d.exit_at || "---"}</div>
-    </div>
-    <div class="divider"></div>
-    <div class="row">
-      <div class="label">Loss</div>
-      <div class="profit red">${d.profit || "---"}</div>
-    </div>
-    <div class="dist">
-      <div>Loss Distribution</div>
-      <span class="tick green">✔</span>
-    </div>
-    <div class="profiles">
+    <div class="card negative">
+
+      <div class="row">
+        <div class="company">${d.name || "Company"}</div>
+        <div class="top-right red">${d.result || "---"}</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div class="muted">Entry: ${d.entry_at || "---"}</div>
+        <div class="muted">Exit: ${d.exit_at || "---"}</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div class="label">Loss</div>
+        <div class="profit red">${d.profit || "---"}</div>
+      </div>
+
+      <div class="dist">
+        <div>Loss Distribution</div>
+        <span class="tick red">✖</span>
+      </div>
+
+      <div class="profiles">
+
         <div class="profile">
           <div class="avatar">
             <img src="profile.png">
-            <span class="badge" style="display:${'inline'}">✔</span>
+            <span class="badge" style="display:inline">✔</span>
           </div>
           <div class="amount">${d.amount || "---"}</div>
           <div class="status">${d.status || "Pending"}</div>
@@ -134,14 +143,18 @@ function buildCardNegative(d) {
         <div class="profile">
           <div class="avatar">
             <img src="profile.png">
-            <span class="badge" style="display:${'inline'}">✔</span>
+            <span class="badge" style="display:inline">✔</span>
           </div>
           <div class="amount">${d.amount || "---"}</div>
           <div class="status">${d.status || "Pending"}</div>
         </div>
-        
-    <div class="hint">Tap on number to chat direct with your partner</div>
-    <div class="uid">UID: ${usDid}</div>
+
+      </div>
+
+      <div class="hint">Tap on number to chat directly with your partner</div>
+      <div class="uid">UID: ${usDid}</div>
+
+    </div>
   `;
 }
 
