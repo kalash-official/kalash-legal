@@ -90,14 +90,14 @@ function buildCard(d, label) {
   return `
     <div class="row">
       <div class="company">${d.name || "Company"}</div>
-      <div class="top-right">₹ ${d.top || "---"}</div>
+      <div class="top-right">₹ ${d.result || "---"}</div>
     </div>
 
     <div class="divider"></div>
 
     <div class="row">
-      <div class="muted">Entry: ₹ ${d.entry || "---"}</div>
-      <div class="muted">Exit: ₹ ${d.exit || "---"}</div>
+      <div class="muted">Entry: ₹ ${d.entry_at || "---"}</div>
+      <div class="muted">Exit: ₹ ${d.exit_at || "---"}</div>
     </div>
 
     <div class="divider"></div>
