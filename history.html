@@ -81,55 +81,6 @@ async function loadTrades() {
   });
 }
 
-function buildHeader(d, colorClass) {
-  return `
-    <div class="row">
-      <div class="company">${d.name || "Company"}</div>
-      <div class="top-right ${colorClass}">₹ ${d.result || "---"}</div>
-    </div>
-  `;
-}
-
-function buildCommon(d, label, colorClass) {
-  return `
-    ${buildHeader(d, colorClass)}
-    <div class="divider"></div>
-    <div class="row">
-      <div class="muted">Entry: ₹ ${d.entry_at || "---"}</div>
-      <div class="muted">Exit: ₹ ${d.exit_at || "---"}</div>
-    </div>
-    <div class="divider"></div>
-    <div class="row">
-      <div class="label">${label}</div>
-      <div class="profit ${colorClass}">₹ ${d.profit || "---"}</div>
-    </div>
-  `;
-}
-
-function buildPartners(d) {
-  return `
-    <div class="dist">
-      <div>Profit Distribution</div>
-      <span class="tick green">✔</span>
-    </div>
-    <div class="profiles">
-      ${[1,2,3].map(i => `
-        <div class="profile">
-          <div class="avatar">
-            <img src="profile.png">
-            <span class="badge" style="display:${d['tick'+i] ? 'inline' : 'none'}">✔</span>
-          </div>
-          <div class="amount">₹ ${d['amount'+i] || "---"}</div>
-          <div class="status">${d['status'+i] || "Pending"}</div>
-          <button class="btn" style="display:${d['settle'+i] ? 'inline-block' : 'none'}">Settle</button>
-        </div>
-      `).join("")}
-    </div>
-    <div class="hint">Tap on number to chat direct with your partner</div>
-    <div class="uid">UID: ${usDid}</div>
-  `;
-}
-
 function buildCardPositive(d) {
   return buildCommon(d, "Profit", "green") + buildPartners(d);
 }
