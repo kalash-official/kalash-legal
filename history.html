@@ -66,10 +66,10 @@ async function loadTrades() {
     const d = doc.data();
     let html = "";
 
-    if (d.result_type === "positive") html = buildCardPositive(d);
-    else if (d.result_type === "negative" || d.result_type === "incomplete negative") html = buildCardNegative(d);
-    else if (d.result_type === "cancel") html = buildCardCancel(d);
-    else if (d.result_type === "incomplete positive") html = buildCardIncompletePositive(d);
+    if (d.result === "positive") html = buildCardPositive(d);
+    else if (d.result === "negative" || d.result === "incomplete negative") html = buildCardNegative(d);
+    else if (d.result === "cancel") html = buildCardCancel(d);
+    else if (d.result === "incomplete positive") html = buildCardIncompletePositive(d);
     else html = buildCardDefault(d);
 
     const card = document.createElement("div");
