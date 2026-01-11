@@ -137,7 +137,7 @@ function buildCardPositive(d) {
 function buildCardNegative(d) {
    return `
     <div class="row">
-      <div class="company">${d.name || "Company"}</div>
+      <div class="company">${d.entry_at || "Company"}</div>
       <div class="top-right">₹ ${d.result ?? "---"}</div>
     </div>
 
