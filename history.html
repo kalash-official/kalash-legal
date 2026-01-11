@@ -191,6 +191,98 @@ async function loadTrades() {
     const d = doc.data();
 
     if (d.result_type === "cancel") {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="row">
+        <div class="company">${d.name || "Company"}</div>
+        <div class="top-right">₹ ${d.top || "---"}</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div class="muted">Entry: ₹ ${d.entry || "---"}</div>
+        <div class="muted">Exit: ₹ ${d.exit || "---"}</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div class="label">Profit</div>
+        <div class="profit">₹ ${d.profit || "---"}</div>
+      </div>
+
+      <div class="dist">
+        <div>Profit Distribution</div>
+        <span class="tick">✔</span>
+      </div>
+
+      <div class="profiles">
+        ${[1,2,3].map(i => `
+          <div class="profile">
+            <div class="avatar">
+              <img src="profile.png">
+              <span class="badge" style="display:${d['tick'+i] ? 'inline' : 'none'}">✔</span>
+            </div>
+            <div class="amount">₹ ${d['amount'+i] || "---"}</div>
+            <div class="status">${d['status'+i] || "Pending"}</div>
+            <button class="btn" style="display:${d['settle'+i] ? 'inline-block' : 'none'}">Settle</button>
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="hint">Tap Settle to complete partner payment</div>
+      <div class="uid">UID: ${usDid}</div>
+    `;
+    } else if (resultType === "positive") {
+       const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="row">
+        <div class="company">${d.name || "Company"}</div>
+        <div class="top-right">₹ ${d.top || "---"}</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div class="muted">Entry: ₹ ${d.entry || "---"}</div>
+        <div class="muted">Exit: ₹ ${d.exit || "---"}</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div class="label">Profit</div>
+        <div class="profit">₹ ${d.profit || "---"}</div>
+      </div>
+
+      <div class="dist">
+        <div>Profit Distribution</div>
+        <span class="tick">✔</span>
+      </div>
+
+      <div class="profiles">
+        ${[1,2,3].map(i => `
+          <div class="profile">
+            <div class="avatar">
+              <img src="profile.png">
+              <span class="badge" style="display:${d['tick'+i] ? 'inline' : 'none'}">✔</span>
+            </div>
+            <div class="amount">₹ ${d['amount'+i] || "---"}</div>
+            <div class="status">${d['status'+i] || "Pending"}</div>
+            <button class="btn" style="display:${d['settle'+i] ? 'inline-block' : 'none'}">Settle</button>
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="hint">Tap Settle to complete partner payment</div>
+      <div class="uid">UID: ${usDid}</div>
+    `;
+    }else if (resultType === "negative" || resultType === "incomplete negative") {
         const card = document.createElement("div");
     card.className = "card";
 
@@ -236,12 +328,52 @@ async function loadTrades() {
       <div class="hint">Tap Settle to complete partner payment</div>
       <div class="uid">UID: ${usDid}</div>
     `;
-    } else if (resultType === "profit" || resultType === "positive") {
-      
-    }else if (resultType === "profit" || resultType === "positive") {
-      isPositive = true;
-    } else {
-      isPositive = false;
+    } else if (resultType === "incomplete positive")  {
+       const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="row">
+        <div class="company">${d.name || "Company"}</div>
+        <div class="top-right">₹ ${d.top || "---"}</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div class="muted">Entry: ₹ ${d.entry || "---"}</div>
+        <div class="muted">Exit: ₹ ${d.exit || "---"}</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div class="label">Profit</div>
+        <div class="profit">₹ ${d.profit || "---"}</div>
+      </div>
+
+      <div class="dist">
+        <div>Profit Distribution</div>
+        <span class="tick">✔</span>
+      </div>
+
+      <div class="profiles">
+        ${[1,2,3].map(i => `
+          <div class="profile">
+            <div class="avatar">
+              <img src="profile.png">
+              <span class="badge" style="display:${d['tick'+i] ? 'inline' : 'none'}">✔</span>
+            </div>
+            <div class="amount">₹ ${d['amount'+i] || "---"}</div>
+            <div class="status">${d['status'+i] || "Pending"}</div>
+            <button class="btn" style="display:${d['settle'+i] ? 'inline-block' : 'none'}">Settle</button>
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="hint">Tap Settle to complete partner payment</div>
+      <div class="uid">UID: ${usDid}</div>
+    `;
     }
 
     list.appendChild(card);
