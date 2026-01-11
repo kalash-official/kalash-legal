@@ -75,7 +75,7 @@ async function loadTrades() {
     else if (type == "negative" || type == "incomplete negative") {
       cardHTML = buildCard(d, "Loss Trade");
     } 
-    else {
+    else if ("incomplete positive" {
       cardHTML = buildCard(d, "Trade");
     }
 
