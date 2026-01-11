@@ -127,11 +127,19 @@ function buildCardNegative(d) {
             <img src="profile.png">
             <span class="badge" style="display:${d['tick'+i] ? 'inline' : 'none'}">✔</span>
           </div>
-          <div class="amount">₹ ${d['amount'+i] || "---"}</div>
-          <div class="status">${d['status'+i] || "Pending"}</div>
-          <button class="btn" style="display:${d['settle'+i] ? 'inline-block' : 'none'}">Settle</button>
+          <div class="amount">${d.amount || "---"}</div>
+          <div class="status">${d.status || "Pending"}</div>
         </div>
-    </div>
+
+        <div class="profile">
+          <div class="avatar">
+            <img src="profile.png">
+            <span class="badge" style="display:${d['tick'+i] ? 'inline' : 'none'}">✔</span>
+          </div>
+          <div class="amount">${d.amount || "---"}</div>
+          <div class="status">${d.status || "Pending"}</div>
+        </div>
+        
     <div class="hint">Tap on number to chat direct with your partner</div>
     <div class="uid">UID: ${usDid}</div>
   `;
