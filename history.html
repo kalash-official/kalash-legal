@@ -66,16 +66,16 @@ async function loadTrades() {
 
     let cardHTML = "";
 
-    if (type == "cancel") {
+    if (type === "cancel") {
       cardHTML = buildCard(d, "Cancelled Trade");
     } 
-    else if (type == "positive") {
+    else if (type === "positive") {
       cardHTML = buildCard(d, "Profit Trade");
     } 
-    else if (type == "negative" || type == "incomplete negative") {
+    else if (type === "negative" || type === "incomplete negative") {
       cardHTML = buildCard(d, "Loss Trade");
     } 
-    else if ("incomplete positive" {
+    else if (type === "incomplete positive" {
       cardHTML = buildCard(d, "Trade");
     }
 
