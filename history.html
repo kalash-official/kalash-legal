@@ -71,34 +71,16 @@ async function loadTrades() {
 
     let label = "Trade";
 
-    if (type === "cancel") {
-      label = "Cancelled Trade";
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = buildCard(d, label);
-      list.appendChild(card);
-    }
-    else if (type === "positive")  {
-      label = "Profit Trade";
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = buildCard(d, label);
-      list.appendChild(card);
-    }
-    else if (type === "negative" || type === "incomplete negative") {
-      label = "Loss Trade";
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = buildCard(d, label);
-      list.appendChild(card);
-    }
-    else if (type === "incomplete positive") {
-      label = "Incomplete Profit Trade";
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = buildCard(d, label);
-      list.appendChild(card);
-    }
+    if (type === "cancel") label = "Cancelled Trade";
+    else if (type === "positive") label = "Profit Trade";
+    else if (type === "negative" || type === "incomplete negative") label = "Loss Trade";
+    else if (type === "incomplete positive") label = "Incomplete Profit Trade";
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = buildCard(d, label);
+
+    list.appendChild(card);
   });
 }
 
