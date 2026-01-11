@@ -138,14 +138,14 @@ function buildCardNegative(d) {
    return `
     <div class="row">
       <div class="company">${d.entry_at || "Company"}</div>
-      <div class="top-right">₹ ${d.result ?? "---"}</div>
+      <div class="top-right">${d.result ?? "---"}</div>
     </div>
 
     <div class="divider"></div>
 
     <div class="row">
-      <div class="muted">Entry: ₹ ${d.entry_at ?? "---"}</div>
-      <div class="muted">Exit: ₹ ${d.exit_at ?? "---"}</div>
+      <div class="muted">Entry: ${d.entry_at ?? "---"}</div>
+      <div class="muted">Exit: ${d.exit_at ?? "---"}</div>
     </div>
 
     <div class="divider"></div>
