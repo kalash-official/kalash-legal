@@ -105,7 +105,7 @@ function buildCardNegative(d) {
   return `
     <div class="row">
       <div class="company">${d.name || "Company"}</div>
-      <div class="top-right red">₹ ${d.result || "---"}</div>
+      <div class="top-right red">${d.result || "---"}</div>
     </div>
     <div class="divider"></div>
     <div class="row">
@@ -115,7 +115,7 @@ function buildCardNegative(d) {
     <div class="divider"></div>
     <div class="row">
       <div class="label">Loss</div>
-      <div class="profit red">₹ ${d.profit || "---"}</div>
+      <div class="profit red">${d.profit || "---"}</div>
     </div>
     ${partnersUI(d)}
   `;
