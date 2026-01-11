@@ -117,7 +117,25 @@ function buildCardNegative(d) {
       <div class="label">Loss</div>
       <div class="profit red">${d.profit || "---"}</div>
     </div>
-    ${partnersUI(d)}
+    <div class="dist">
+      <div>Loss Distribution</div>
+      <span class="tick green">✔</span>
+    </div>
+    <div class="profiles">
+      ${[1,2,3].map(i => `
+        <div class="profile">
+          <div class="avatar">
+            <img src="profile.png">
+            <span class="badge" style="display:${d['tick'+i] ? 'inline' : 'none'}">✔</span>
+          </div>
+          <div class="amount">₹ ${d['amount'+i] || "---"}</div>
+          <div class="status">${d['status'+i] || "Pending"}</div>
+          <button class="btn" style="display:${d['settle'+i] ? 'inline-block' : 'none'}">Settle</button>
+        </div>
+      `).join("")}
+    </div>
+    <div class="hint">Tap on number to chat direct with your partner</div>
+    <div class="uid">UID: ${usDid}</div>
   `;
 }
 
