@@ -138,8 +138,8 @@ function buildCardNegative(d) {
           </div>
           <div class="amount">${d.daynaiwalaFirstAmount || "---"}</div>
           <div class="status"> ${String(d.daynaiwalaFirstUsdid) === "null" ? "Pending" : "Partner alloted"}</div>
+          <div class="wa_number">${d.daynaiwalaFirstNumber === "null" ? "--" : d.daynaiwalaFirstNumber}</div>
 
-          <div class="wa_number">${d.daynaiwalaFirstNumber || "--"}</div>
         </div>
 
         <div class="profile">
@@ -149,13 +149,13 @@ function buildCardNegative(d) {
           </div>
            <div class="amount">${d.daynaiwalaSecondAmount || "---"}</div>
            <div class="status"> ${String(d.daynaiwalaSecondUsdid) === "null" ? "Pending" : "Partner alloted"}</div>
-           <div class="wa_number">${d.daynaiwalaFirstNumber || "--"}</div>
+           <div class="wa_number">${d.daynaiwalaSecondNumber === "null" ? "--" : d.daynaiwalaSecondNumber}</div>
         </div>
 
       </div>
 
       <div class="hint">Tap on number to chat directly with your partner</div>
-      <div class="uid">UID: ${usDid}</div>
+      <div class="uid">UID: ${his_did}</div>
 
     </div>
   `;
