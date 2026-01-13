@@ -120,13 +120,12 @@ function buildCardNegative(d) {
       <div class="divider"></div>
 
       <div class="row">
-        <div class="label">Loss</div>
-        <div class="profit red">${d.profit || "---"}</div>
+        <div class="label">Loss(with included all charges)</div>
+        <div class="profit red">${d.daynaiwalaFirstAmount + d.daynaiwalaSecondAmount || "---"}</div>
       </div>
 
       <div class="dist">
         <div>Loss Distribution</div>
-        <span class="tick red">✖</span>
       </div>
 
       <div class="profiles">
@@ -134,21 +133,22 @@ function buildCardNegative(d) {
         <div class="profile">
           <div class="avatar">
             <img src="profile.png">
-            <span class="badge" style="display:inline">✔</span>
+            <span class="badge" style="display:${d.paymentStatusFirst === "false" ? "none" : "inline"}">✔</span>
           </div>
-          <div class="amount">${d.amount || "---"}</div>
-          <div class="status">${d.status || "Pending"}</div>
-          <div class="wa_number">${d.status || "Pending"}</div>
+          <div class="amount">${d.daynaiwalaFirstAmount || "---"}</div>
+          <div class="status"> ${String(d.daynaiwalaFirstUsdid) === "null" ? "Pending" : "Partner alloted"}</div>
+
+          <div class="wa_number">${d.daynaiwalaFirstNumber || "--"}</div>
         </div>
 
         <div class="profile">
           <div class="avatar">
             <img src="profile.png">
-            <span class="badge" style="display:inline">✔</span>
+            <span class="badge" style="display:${d.paymentStatusSecond === "false" ? "none" : "inline"}">✔</span>
           </div>
-          <div class="amount">${d.amount || "---"}</div>
-          <div class="status">${d.status || "Pending"}</div>
-          <div class="wa_number">${d.status || "Pending"}</div>
+           <div class="amount">${d.daynaiwalaSecondAmount || "---"}</div>
+           <div class="status"> ${String(d.daynaiwalaSecondUsdid) === "null" ? "Pending" : "Partner alloted"}</div>
+           <div class="wa_number">${d.daynaiwalaFirstNumber || "--"}</div>
         </div>
 
       </div>
