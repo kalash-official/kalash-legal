@@ -102,7 +102,7 @@ function buildCardPositive(d) {
 }
 
 /* NEGATIVE */
-function buildCardNegative(d) {
+function buildCardNegative(d, his_did) {
   const firstAmt = Number(d.daynaiwalaFirstAmount || 0);
   const secondAmt = Number(d.daynaiwalaSecondAmount || 0);
 
@@ -155,7 +155,7 @@ function buildCardNegative(d) {
     </div>
 
     <div class="hint">Tap on number to chat directly with your partner</div>
-    <div class="uid">UID: ${typeof his_did !== "undefined" ? his_did : ""}</div>
+    <div class="uid">UID: ${his_did}</div>
   `;
 }
 
