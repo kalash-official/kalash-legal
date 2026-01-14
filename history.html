@@ -466,13 +466,13 @@ function buildCardCancel(d, his_did) {
           <img src="profile.png">
           <span class="badge" style="display:${d.paystatus === "false" ? "none" : "inline"}">✔</span>
         </div>
-        <div class="amount"> ${d.Amt || "---"}</div>
+        <div class="amount"> ${Amt || "---"}</div>
         <div class="status">${String(d.daynaiwalaUsdid) === "null" ? "Pending" : "Partner alloted"}</div>
         ${d.daynaiwalaNumber === "null" 
   ? `<div class="wa_number">--</div>` 
   : (() => {
       const phone = d.daynaiwalaNumber.replace(/[^0-9]/g,'');
-      const amount = d.Amt || '';
+      const amount = Amt || '';
       const message = encodeURIComponent(
         `Hello, please make the payment of ${d.Amt}. Once the payment is completed, I will share the PIN with you. Thank you.`
       );
