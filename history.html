@@ -338,13 +338,8 @@ function buildCardPositive(d, his_did) {
         ${String(d.laynaiwalaAmount) === "null" || !d.laynaiwalaAmount ? `` : `<div class="amount">${d.laynaiwalaAmount}</div>`}
 
         ${String(d.laynaiwalaUsdid) === "null" ? `<button class="find-partner-btn" onclick="findPartner('${d.id}')">Find Partner</button>` : `<div class="status">Partner alloted</div>`}
-       ${(String(d.laynaiwala_pay_status) === "false" && String(d.laynaiwalaUsdid) === "null")
-  ? ``
-  : (String(d.laynaiwala_pay_status) === "false"
-      ? `<button class="find-partner-btn" onclick="findPartner('${d.id}')">Verify Payment</button>`
-      : `<div class="status">Verify Payment</div>`
-    )
-}
+      ${String(d.laynaiwala_pay_status) === "true"? ``: (String(d.laynaiwalaUsdid) === "null"   ? `` : `<button class="find-partner-btn" onclick="findPartner('${d.id}')">Verify Payment</button>`)}
+
 
       ${String(d.laynaiwalaNumber) === "null" || !d.laynaiwalaNumber
   ? ``: (() => {
