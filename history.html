@@ -125,7 +125,7 @@ function buildCardNegative(d, his_did) {
 
     <div class="row">
       <div class="label">Loss (with included all charges)</div>
-      <div class="profit red">₹ ${firstAmt + secondAmt}</div>
+      <div class="profit red"> ${firstAmt + secondAmt}</div>
     </div>
 
     <div class="dist"><div>Loss Distribution</div></div>
@@ -138,7 +138,7 @@ function buildCardNegative(d, his_did) {
           <img src="profile.png">
           <span class="badge" style="display:${d.paymentStatusFirst === "false" ? "none" : "inline"}">✔</span>
         </div>
-        <div class="amount">₹ ${d.daynaiwalaFirstAmount || "---"}</div>
+        <div class="amount"> ${d.daynaiwalaFirstAmount || "---"}</div>
         <div class="status">${String(d.daynaiwalaFirstUsdid) === "null" ? "Pending" : "Partner alloted"}</div>
         <div class="wa_number">${d.daynaiwalaFirstNumber === "null" ? "--" : d.daynaiwalaFirstNumber}</div>
       </div>
@@ -149,7 +149,7 @@ function buildCardNegative(d, his_did) {
           <img src="profile.png">
           <span class="badge" style="display:${d.paymentStatusSecond === "false" ? "none" : "inline"}">✔</span>
         </div>
-        <div class="amount">₹ ${d.daynaiwalaSecondAmount || "---"}</div>
+        <div class="amount">${d.daynaiwalaSecondAmount || "---"}</div>
         <div class="status">${String(d.daynaiwalaSecondUsdid) === "null" ? "Pending" : "Partner alloted"}</div>
         <div class="wa_number">${d.daynaiwalaSecondNumber === "null" ? "--" : d.daynaiwalaSecondNumber}</div>
       </div>
