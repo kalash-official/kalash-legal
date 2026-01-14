@@ -99,10 +99,19 @@ body {
   max-width: 150px;
 }
 
+.profile > * {
+  margin-top: 6px;
+}
+
+.profile > *:first-child {
+  margin-top: 0;
+}
+
 .avatar {
   position: relative;
   display: inline-block;
   padding-top: 14px;
+  margin-bottom: 4px;
 }
 
 .avatar img {
@@ -126,27 +135,6 @@ body {
   border: 1px solid #6ee7b7;
   white-space: nowrap;
 }
-  .wa-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  color: #16a34a;
-  text-decoration: none;
-  font-weight: 500;
-  margin-top: 4px;
-}
-
-.wa-link:hover {
-  text-decoration: underline;
-  opacity: 0.9;
-}
-
-.wa-icon {
-  width: 12px;
-  height: 12px;
-  display: inline-block;
-}
 
 .badge {
   position: absolute;
@@ -162,7 +150,6 @@ body {
 }
 
 .amount {
-  margin-top: 6px;
   font-size: 13px;
   font-weight: 600;
   color: #111827;
@@ -171,7 +158,27 @@ body {
 .status {
   font-size: 11px;
   color: #6b7280;
-  margin-top: 2px;
+}
+
+.wa-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #16a34a;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.wa-link:hover {
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+.wa-icon {
+  width: 12px;
+  height: 12px;
 }
 
 .wa_number {
@@ -259,10 +266,6 @@ body {
     max-width: 460px;
   }
 }
-
-
-  
-  
 </style>
 </head>
 
