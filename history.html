@@ -94,9 +94,12 @@ body {
 }
 
 .profile {
-  text-align: center;
   flex: 1 1 120px;
   max-width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .profile > * {
@@ -160,6 +163,29 @@ body {
   color: #6b7280;
 }
 
+.find-partner-btn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: none;
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: all 0.12s ease;
+}
+
+.find-partner-btn:hover {
+  transform: translateY(-0.5px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.find-partner-btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
 .wa-link {
   display: inline-flex;
   align-items: center;
@@ -169,6 +195,7 @@ body {
   color: #16a34a;
   text-decoration: none;
   font-weight: 500;
+  margin-top: 2px;
 }
 
 .wa-link:hover {
@@ -203,91 +230,29 @@ body {
 
 /* Mobile */
 @media (max-width: 600px) {
-  body {
-    padding: 6px;
-  }
-
-  .card {
-    max-width: 100%;
-    border-radius: 14px;
-  }
-
-  .company {
-    font-size: 15px;
-  }
-
-  .top-right {
-    font-size: 11px;
-    padding: 3px 8px;
-  }
-
-  .profiles {
-    padding: 10px;
-    gap: 8px;
-  }
-
-  .amount {
-    font-size: 12px;
-  }
-
-  .status,
-  .wa_number {
-    font-size: 10px;
-  }
-
-  .hint,
-  .uid {
-    font-size: 10px;
-  }
+  body { padding: 6px; }
+  .card { max-width: 100%; border-radius: 14px; }
+  .company { font-size: 15px; }
+  .top-right { font-size: 11px; padding: 3px 8px; }
+  .profiles { padding: 10px; gap: 8px; }
+  .amount { font-size: 12px; }
+  .status, .wa_number { font-size: 10px; }
+  .hint, .uid { font-size: 10px; }
 }
 
 /* Very small phones */
 @media (max-width: 360px) {
-  body {
-    padding: 4px;
-  }
-
-  .card {
-    padding: 12px;
-  }
-
-  .company {
-    font-size: 14px;
-  }
-
-  .profit {
-    font-size: 13px;
-  }
+  body { padding: 4px; }
+  .card { padding: 12px; }
+  .company { font-size: 14px; }
+  .profit { font-size: 13px; }
 }
 
 /* Large screens */
 @media (min-width: 900px) {
-  .card {
-    max-width: 460px;
-  }
-}
- .find-partner-btn {
-  padding: 4px 10px;        /* reduced padding */
-  border-radius: 6px;       /* smaller curve */
-  border: none;
-  background: linear-gradient(135deg, #4CAF50, #2E7D32);
-  color: white;
-  font-size: 11px;          /* smaller text */
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  transition: all 0.12s ease;
+  .card { max-width: 460px; }
 }
 
-.find-partner-btn:hover {
-  transform: translateY(-0.5px);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-}
-
-.find-partner-btn:active {
-  transform: scale(0.96);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
 
 </style>
 </head>
