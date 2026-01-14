@@ -5,33 +5,165 @@
 <title>Trade History</title>
 
 <style>
-body { font-family: Arial,sans-serif; background:#f3f3f3; padding:16px; }
-.list { display:flex; flex-direction:column; gap:12px; }
-.card { background:white; border-radius:12px; padding:16px; max-width:480px; margin:auto; box-shadow:0 2px 6px rgba(0,0,0,0.12); }
-.row { display:flex; justify-content:space-between; align-items:center; }
-.company { font-size:18px; font-weight:700; max-width:70%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.top-right { font-weight:600; }
-.green { color:#4CAF50; }
-.red { color:#E53935; }
-.gray { color:#888; }
-.divider { height:1px; background:#eee; margin:12px 0; }
-.muted { color:#666; font-size:13px; }
-.label { color:#333; font-size:14px; }
-.profit { font-size:14px; font-weight:bold; }
-.dist { margin-top:12px; font-size:16px; font-weight:600; display:flex; justify-content:space-between; }
-.tick { font-size:18px; }
-.profiles { display:flex; justify-content:space-between; margin-top:12px; padding:12px; background:#fafafa; border-radius:8px; }
-.profile { text-align:center; flex:1; }
-.avatar { position:relative; display:inline-block; }
-.avatar img { width:48px; height:48px; border-radius:50%; }
-.badge { position:absolute; top:-4px; right:-4px; background:white; border-radius:50%; padding:2px 4px; font-size:10px; border:1px solid #ddd; display:none; }
-.amount { font-size:13px; margin-top:6px; }
-.status { font-size:12px; margin-top:4px; }
-.btn { margin-top:6px; background:#4CAF50; border:none; color:white; padding:6px 14px; border-radius:18px; font-size:12px; display:none; }
-.hint { margin-top:12px; text-align:center; color:#777; font-size:13px; }
-.uid { margin-top:12px; color:#666; font-weight:bold; font-size:13px; }
-.pin { position: absolute;top: -10px;left: 50%;transform: translateX(-50%); background: #000;color: #fff;font-size: 10px;padding: 2px 6px;border-radius: 10px;font-weight: bold;white-space: nowrap;}
+body {
+  font-family: "Inter", Arial, sans-serif;
+  background: #f4f6f8;
+  padding: 20px;
+}
 
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px;
+  max-width: 420px;
+  margin: auto;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.company {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.top-right {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: #fdecea;
+}
+
+.green { color: #16a34a; background: #e7f8ee; }
+.red { color: #dc2626; background: #fdeaea; }
+.gray { color: #6b7280; background: #f1f5f9; }
+
+.divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 14px 0;
+}
+
+.muted {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.label {
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.profit {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.dist {
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.profiles {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 14px;
+  background: #f9fafb;
+  border-radius: 14px;
+}
+
+.profile {
+  text-align: center;
+  flex: 1;
+}
+
+.avatar {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar img {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+}
+
+.pin {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111827;
+  color: #fff;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.badge {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  background: #16a34a;
+  color: #fff;
+  border-radius: 50%;
+  padding: 2px 5px;
+  font-size: 10px;
+  border: 2px solid #fff;
+  display: none;
+}
+
+.amount {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.status {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.wa_number {
+  font-size: 11px;
+  color: #4b5563;
+}
+
+.hint {
+  margin-top: 14px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.uid {
+  margin-top: 10px;
+  color: #9ca3af;
+  font-weight: 500;
+  font-size: 11px;
+  text-align: center;
+}
 </style>
 </head>
 
