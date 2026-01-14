@@ -317,7 +317,7 @@ async function loadTrades() {
 }
 
 /* POSITIVE */
-function buildCardPositive(d) {
+function buildCardPositive(d, his_did) {
   return `
     <div class="row">
       <div class="company">${d.name || "Company"}</div>
