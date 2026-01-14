@@ -30,6 +30,8 @@ body { font-family: Arial,sans-serif; background:#f3f3f3; padding:16px; }
 .btn { margin-top:6px; background:#4CAF50; border:none; color:white; padding:6px 14px; border-radius:18px; font-size:12px; display:none; }
 .hint { margin-top:12px; text-align:center; color:#777; font-size:13px; }
 .uid { margin-top:12px; color:#666; font-weight:bold; font-size:13px; }
+.pin { position: absolute;top: -10px;left: 50%;transform: translateX(-50%); background: #000;color: #fff;font-size: 10px;padding: 2px 6px;border-radius: 10px;font-weight: bold;white-space: nowrap;}
+
 </style>
 </head>
 
@@ -126,14 +128,13 @@ function buildCardNegative(d, his_did) {
       <div class="profit red">₹ ${firstAmt + secondAmt}</div>
     </div>
 
-    <div class="dist">
-      <div>Loss Distribution</div>
-    </div>
+    <div class="dist"><div>Loss Distribution</div></div>
 
     <div class="profiles">
 
       <div class="profile">
         <div class="avatar">
+          <span class="pin">PIN : 123456</span>
           <img src="profile.png">
           <span class="badge" style="display:${d.paymentStatusFirst === "false" ? "none" : "inline"}">✔</span>
         </div>
@@ -144,6 +145,7 @@ function buildCardNegative(d, his_did) {
 
       <div class="profile">
         <div class="avatar">
+          <span class="pin">PIN : 123456</span>
           <img src="profile.png">
           <span class="badge" style="display:${d.paymentStatusSecond === "false" ? "none" : "inline"}">✔</span>
         </div>
@@ -158,6 +160,7 @@ function buildCardNegative(d, his_did) {
     <div class="uid">UID: ${his_did}</div>
   `;
 }
+
 
 /* CANCEL */
 function buildCardCancel(d) {
