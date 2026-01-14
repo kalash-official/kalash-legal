@@ -318,22 +318,92 @@ async function loadTrades() {
 
 /* POSITIVE */
 function buildCardPositive(d) {
+  const firstAmt = Number(d.daynaiwalaFirstAmount || 0);
+  const secondAmt = Number(d.daynaiwalaSecondAmount || 0);
+
   return `
     <div class="row">
       <div class="company">${d.name || "Company"}</div>
-      <div class="top-right green">₹ ${d.result || "---"}</div>
+      <div class="top-right red">${d.result || "---"}</div>
     </div>
+
     <div class="divider"></div>
+
     <div class="row">
       <div class="muted">Entry: ${d.entry_at || "---"}</div>
       <div class="muted">Exit: ${d.exit_at || "---"}</div>
     </div>
+
     <div class="divider"></div>
+
     <div class="row">
-      <div class="label">Profit</div>
-      <div class="profit green">₹ ${d.profit || "---"}</div>
+      <div class="label">Loss (with included all charges)</div>
+      <div class="profit red"> ${firstAmt + secondAmt}</div>
     </div>
-    ${partnersUI(d)}
+
+    <div class="dist"><div>Loss Distribution</div></div>
+
+    <div class="profiles">
+
+      <div class="profile">
+        <div class="avatar">
+          <span class="pin">PIN : ${d.otp_first}</span>
+          <img src="profile.png">
+          <span class="badge" style="display:${d.paymentStatusFirst === "false" ? "none" : "inline"}">✔</span>
+        </div>
+        <div class="amount"> ${d.daynaiwalaFirstAmount || "---"}</div>
+        <div class="status">${String(d.daynaiwalaFirstUsdid) === "null" ? "Pending" : "Partner alloted"}</div>
+        ${d.daynaiwalaFirstNumber === "null" 
+  ? `<div class="wa_number">--</div>` 
+  : (() => {
+      const phone = d.daynaiwalaFirstNumber.replace(/[^0-9]/g,'');
+      const amount = d.daynaiwalaFirstAmount || '';
+      const message = encodeURIComponent(
+        `Hello, please make the payment of ${d.daynaiwalaFirstAmount}. Once the payment is completed, I will share the PIN with you. Thank you.`
+      );
+      return `
+        <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">
+          <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.52 3.48A11.78 11.78 0 0012 0 11.8 11.8 0 000 12a11.7 11.7 0 001.67 6.03L0 24l6.15-1.62A11.82 11.82 0 0012 24a11.8 11.8 0 008.35-20.52zm-8.52 19.1a9.5 9.5 0 01-4.85-1.33l-.35-.2-3.65.96.97-3.56-.22-.37A9.48 9.48 0 1122.5 12a9.5 9.5 0 01-10.5 10.58zm5.22-7.18c-.29-.14-1.7-.84-1.97-.94s-.47-.14-.67.14-.77.94-.94 1.14-.34.21-.63.07a7.75 7.75 0 01-2.29-1.41 8.52 8.52 0 01-1.57-1.96c-.16-.29 0-.45.12-.59.12-.12.29-.34.43-.51.14-.17.19-.29.29-.48s.05-.36-.02-.5c-.07-.14-.67-1.61-.92-2.21s-.48-.5-.67-.5h-.57c-.19 0-.5.07-.77.36s-1 1-1 2.43 1.02 2.82 1.16 3.02c.14.19 2 3.05 4.85 4.28.68.29 1.21.46 1.62.59.68.22 1.29.19 1.78.12.54-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.33z"/>
+          </svg>
+          ${d.daynaiwalaFirstNumber}
+        </a>
+      `;
+    })()
+}
+      </div>
+
+      <div class="profile">
+        <div class="avatar">
+          <span class="pin">PIN :  ${d.otp_second}</span>
+          <img src="profile.png">
+          <span class="badge" style="display:${d.paymentStatusSecond === "false" ? "none" : "inline"}">✔</span>
+        </div>
+        <div class="amount">${d.daynaiwalaSecondAmount || "---"}</div>
+        <div class="status">${String(d.daynaiwalaSecondUsdid) === "null" ? "Pending" : "Partner alloted"}</div>
+       ${d.daynaiwalaSecondNumber === "null" 
+  ? `<div class="wa_number">--</div>` 
+  : (() => {
+      const phone = d.daynaiwalaSecondNumber.replace(/[^0-9]/g,'');
+      const amount = d.daynaiwalaSecondAmount || '';
+      const message = encodeURIComponent(
+        `Hello, please make the payment of ₹${amount}. Once the payment is completed, I will share the PIN with you. Thank you.`
+      );
+      return `
+        <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">
+          <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.52 3.48A11.78 11.78 0 0012 0 11.8 11.8 0 000 12a11.7 11.7 0 001.67 6.03L0 24l6.15-1.62A11.82 11.82 0 0012 24a11.8 11.8 0 008.35-20.52zm-8.52 19.1a9.5 9.5 0 01-4.85-1.33l-.35-.2-3.65.96.97-3.56-.22-.37A9.48 9.48 0 1122.5 12a9.5 9.5 0 01-10.5 10.58zm5.22-7.18c-.29-.14-1.7-.84-1.97-.94s-.47-.14-.67.14-.77.94-.94 1.14-.34.21-.63.07a7.75 7.75 0 01-2.29-1.41 8.52 8.52 0 01-1.57-1.96c-.16-.29 0-.45.12-.59.12-.12.29-.34.43-.51.14-.17.19-.29.29-.48s.05-.36-.02-.5c-.07-.14-.67-1.61-.92-2.21s-.48-.5-.67-.5h-.57c-.19 0-.5.07-.77.36s-1 1-1 2.43 1.02 2.82 1.16 3.02c.14.19 2 3.05 4.85 4.28.68.29 1.21.46 1.62.59.68.22 1.29.19 1.78.12.54-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.33z"/>
+          </svg>
+          ${d.daynaiwalaSecondNumber}
+        </a>
+      `;
+    })()
+}
+      </div>
+    </div>
+
+    <div class="hint">Tap on number to chat directly with your partner</div>
+    <div class="uid">UID: ${his_did}</div>
   `;
 }
 
@@ -420,10 +490,7 @@ function buildCardNegative(d, his_did) {
       `;
     })()
 }
-
-
       </div>
-
     </div>
 
     <div class="hint">Tap on number to chat directly with your partner</div>
@@ -452,14 +519,13 @@ function buildCardCancel(d, his_did) {
     <div class="divider"></div>
 
     <div class="row">
-      <div class="label">Loss (included compensation)</div>
+      <div class="label">Loss (with included compensation)</div>
       <div class="profit red"> ${Amt}</div>
     </div>
 
     <div class="dist"><div>Loss Distribution</div></div>
 
     <div class="profiles">
-
       <div class="profile">
         <div class="avatar">
           <span class="pin">PIN : ${d.otp}</span>
@@ -487,7 +553,6 @@ function buildCardCancel(d, his_did) {
     })()
 }
       </div>
-
     </div>
 
     <div class="hint">Tap on number to chat directly with your partner</div>
