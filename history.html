@@ -370,13 +370,17 @@ function buildCardPositive(d, his_did) {
           <img src="profile.png">
           <span class="badge" style="display:${d.laynaiwala_pay_status === "false" ? "none" : "inline"}">✔</span>
         </div>
-        <div class="amount"> ${d.laynaiwalaAmount || "---"}</div>
+        ${String(d.laynaiwalaAmount) === "null" || !d.laynaiwalaAmount ? `` : `<div class="amount">${d.laynaiwalaAmount}</div>`}
+
         ${String(d.laynaiwalaUsdid) === "null" ? `<button class="find-partner-btn" onclick="findPartner('${d.id}')">Find Partner</button>` : `<div class="status">Partner alloted</div>`}
 
-      ${d.laynaiwalaNumber === "null" ? `<div class="wa_number">--</div>` : (() => {
-      const phone = d.laynaiwalaNumber.replace(/[^0-9]/g,'');
-      const amount = d.laynaiwalaAmount || '';
-      const message = encodeURIComponent( `Hello, please make the payment of ${d.laynaiwalaAmount}. Once the payment is completed, I will share the PIN with you. Thank you.`);
+      ${String(d.laynaiwalaNumber) === "null" || !d.laynaiwalaNumber
+  ? ``: (() => {
+      const phone = d.laynaiwalaNumber.replace(/[^0-9]/g, '');
+      const message = encodeURIComponent(
+        `Hello, please make the payment of ${d.laynaiwalaAmount || ''}. Once the payment is completed, I will share the PIN with you. Thank you.`
+      );
+
       return `
         <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">
           <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -387,6 +391,7 @@ function buildCardPositive(d, his_did) {
       `;
     })()
 }
+
       </div>
 
       <div class="profile">
