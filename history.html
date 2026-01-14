@@ -9,20 +9,23 @@ body {
   font-family: "Inter", Arial, sans-serif;
   background: #f4f6f8;
   padding: 20px;
+  margin: 0;
 }
 
 .list {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
 }
 
 .card {
   background: #ffffff;
   border-radius: 18px;
   padding: 18px;
+  width: 100%;
   max-width: 420px;
-  margin: auto;
+  margin: 0 auto;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
@@ -44,7 +47,6 @@ body {
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 10px;
-  background: #fdecea;
 }
 
 .green { color: #16a34a; background: #e7f8ee; }
@@ -82,39 +84,42 @@ body {
 
 .profiles {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   margin-top: 12px;
   padding: 14px;
   background: #f9fafb;
   border-radius: 14px;
+  justify-content: center;
 }
 
 .profile {
   text-align: center;
-  flex: 1;
+  flex: 1 1 120px;
+  max-width: 150px;
 }
 
 .avatar {
   position: relative;
   display: inline-block;
-  padding-top: 14px; 
+  padding-top: 14px;
 }
 
 .avatar img {
-  width: 54px;
-  height: 54px;
+  width: clamp(44px, 12vw, 54px);
+  height: clamp(44px, 12vw, 54px);
   border-radius: 50%;
   border: 2px solid #e5e7eb;
 }
 
 .pin {
   position: absolute;
-  top: 0;                       
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   background: #d1fae5;
   color: #065f46;
-  font-size: 9px;
+  font-size: clamp(8px, 2vw, 9px);
   padding: 2px 6px;
   border-radius: 10px;
   font-weight: 600;
@@ -167,14 +172,15 @@ body {
   font-size: 11px;
   text-align: center;
 }
+
+/* Mobile */
 @media (max-width: 600px) {
   body {
-    padding: 10px;
+    padding: 6px;
   }
 
   .card {
     max-width: 100%;
-    padding: 14px;
     border-radius: 14px;
   }
 
@@ -192,11 +198,6 @@ body {
     gap: 8px;
   }
 
-  .avatar img {
-    width: 48px;
-    height: 48px;
-  }
-
   .amount {
     font-size: 12px;
   }
@@ -212,11 +213,32 @@ body {
   }
 }
 
+/* Very small phones */
+@media (max-width: 360px) {
+  body {
+    padding: 4px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .company {
+    font-size: 14px;
+  }
+
+  .profit {
+    font-size: 13px;
+  }
+}
+
+/* Large screens */
 @media (min-width: 900px) {
   .card {
     max-width: 460px;
   }
 }
+
 
   
   
