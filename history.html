@@ -822,7 +822,7 @@ window.handleFindPartnerCancel = async function (usDid, his_did, selfNumber, btn
       // UPDATE PARTNER TRADE
       const updatePartner = {};
       updatePartner.daynaiwalaNumber = selfNumber;
-      pdatePartner.daynaiwalaUsdid = usDid;
+      updatePartner.daynaiwalaUsdid = usDid;
       updatePartner.daynaiwalaTHdid = his_did;
       transaction.update(partnerTradeRef, updatePartner);
 
