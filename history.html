@@ -358,12 +358,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
                 `Hello, I have made the payment of ${d.laynaiwalaAmount || ""}. Please share the PIN so that my account can be unblocked. Thank you.`
               );
               return `
-                <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">
-                  <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.52 3.48A11.78 11.78 0 0012 0A11.8 11.8 0 000 12a11.7 11.7 0 001.67 6.03L0 24l6.15-1.62A11.82 11.82 0 0012 24a11.8 11.8 0 008.35-20.52z"/>
-                  </svg>
-                  ${d.laynaiwalaNumber}
-                </a>
+                <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">${d.laynaiwalaNumber}</a>
               `;
             })()
           : ``}
@@ -394,12 +389,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
                 `Hello, I have made the payment of ${d.cancellaynaiwalaAmount || ""}. Please share the PIN so that my account can be unblocked. Thank you.`
               );
               return `
-                <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">
-                  <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.52 3.48A11.78 11.78 0 0012 0A11.8 11.8 0 000 12a11.7 11.7 0 001.67 6.03L0 24l6.15-1.62A11.82 11.82 0 0012 24a11.8 11.8 0 008.35-20.52z"/>
-                  </svg>
-                  ${d.cancellaynaiwalaNumber}
-                </a>
+                <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank"> ${d.cancellaynaiwalaNumber}</a>
               `;
             })()
           : ``}
@@ -420,7 +410,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           : `<div class="status">Partner alloted</div>`}
 
         ${d.own_pay_status === "false" && d.own_amount > 0 
-          ? `<button class="find-partner-btn" onclick="handleFindPartner('${usDid}', '${his_did}', '${selfNumber}', this)"> Make Payment ${d.own_amount} </button>` : ``}
+          ? `<button class="find-partner-btn" onclick="handleFindPartnerOwner('${usDid}', '${his_did}', '${selfNumber}', this)"> Make Payment ${d.own_amount} </button>` : ``}
           
       </div>
 
@@ -857,6 +847,75 @@ window.handleFindPartnerCancel = async function (usDid, his_did, selfNumber, btn
     }
   }
 };
+
+window.handleFindPartnerOwner = async function (usDid, his_did, selfNumber, btn) {
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = "Please wait...";
+    btn.style.opacity = "0.7";
+  }
+
+  try {
+    // 1️⃣ SELF TRADE REF
+    const selfRef = doc(db, "users_setting", usDid, "trade_history", his_did);
+    const selfSnap = await getDoc(selfRef);
+
+    if (!selfSnap.exists()) {
+      alert("Trade not found");
+      return;
+    }
+
+    const d = selfSnap.data();
+
+    // 2️⃣ CHECK PARTNERS ALLOTTED OR NOT
+    const laynaiwalaMissing = !d.laynaiwalaUsdid || d.laynaiwalaUsdid === "null";
+    const cancelMissing = !d.cancellaynaiwalaUsdid || d.cancellaynaiwalaUsdid === "null";
+
+    if (laynaiwalaMissing || cancelMissing) {
+      alert("Maybe one or both partners are not allotted");
+      return;
+    }
+
+    // 3️⃣ CHECK OWN AMOUNT
+    const ownAmount = Number(d.own_amount || 0);
+
+    if (ownAmount !== 0) {
+      alert("Already allotted");
+      return;
+    }
+
+    // 4️⃣ CALCULATION 
+    const entry_at = Number(d.entry_at);
+    const exit_at = Number(d.exit_at);
+    const quantity = Number(d.quantity);
+
+    const laynaiwalaAmount = Number(d.laynaiwalaAmount || 0);
+    const cancellaynaiwalaAmount = Number(d.cancellaynaiwalaAmount || 0);
+
+    const capture_point = exit_at - entry_at;
+    const total_prof = capture_point * quantity;
+    const sixty_per = 0.6 * total_prof;
+
+    const own_am = sixty_per - (laynaiwalaAmount + cancellaynaiwalaAmount);
+
+    // round to 2 decimals (HALF_UP)
+    const roundedOwnAmount = Math.round((own_am + Number.EPSILON) * 100) / 100;
+
+    // 5️⃣ UPDATE FIRESTORE
+    await updateDoc(selfRef, {
+      own_amount: roundedOwnAmount
+    });
+
+    alert("Owner amount updated successfully");
+    location.reload();
+
+  } catch (e) {
+    console.error(e);
+    alert("Operation failed");
+    location.reload();
+  }
+};
+
 
 
 
