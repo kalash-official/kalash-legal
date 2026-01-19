@@ -344,7 +344,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           ? `<div class="amount">${d.laynaiwalaAmount}</div>` : ``}
 
         ${d.laynaiwalaUsdid === "null"
-          ? `<button class="find-partner-btn"onclick="handleFindPartner('${usDid}', '${his_did}', '${selfNumber}')"> Find Partner </button>`
+          ? `<button class="find-partner-btn"onclick="handleFindPartner('${usDid}', '${his_did}', '${selfNumber}', this)"> Find Partner </button>`
           : `<div class="status">Partner alloted</div>`}
 
         ${d.laynaiwalaUsdid !== "null" && d.laynaiwala_pay_status !== "true"
@@ -380,7 +380,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           ? `<div class="amount">${d.cancellaynaiwalaAmount}</div>` : ``}
 
         ${d.cancellaynaiwalaUsdid === "null"
-          ? `<button class="find-partner-btn" onclick="handleFindPartner('${d.id}')">Find Partner</button>`
+          ? `<button class="find-partner-btn"onclick="handleFindPartnerCancel('${usDid}', '${his_did}', '${selfNumber}', this)"> Find Partner </button>`
           : `<div class="status">Partner alloted</div>`}
 
         ${d.cancellaynaiwalaUsdid !== "null" && d.cancellaynaiwala_pay_status !== "true"
@@ -632,8 +632,8 @@ function partnersUI(d) {
 
 loadTrades();
 
-window.handleFindPartner = async function (usDid, his_did, selfNumber) {
-  alert(usDid+"----"+his_did);
+window.handleFindPartner = async function (usDid, his_did, selfNumber, btn) {
+  btn.disabled = true;
   try {
     // 1️⃣ SELF TRADE REF
     const selfRef = doc(db, "users_setting", usDid, "trade_history", his_did);
@@ -723,6 +723,112 @@ window.handleFindPartner = async function (usDid, his_did, selfNumber) {
       // UPDATE SELF TRADE
       transaction.update(selfRef, {
         laynaiwalaAmount: div_amount,
+        laynaiwalaNumber: number,
+        laynaiwalaUsdid: us_did,
+        laynaiwalaThdid: th_did
+      });
+
+      // DELETE NEGATIVE_TRADE DOC
+      transaction.delete(partnerRef);
+    });
+
+    // 5️⃣ SUCCESS
+    alert("Partner allotted successfully");
+    location.reload();
+
+  } catch (e) {
+    if (e === "ALREADY_TAKEN") {
+      alert("Partner already taken, retrying...");
+      location.reload();
+    } else {
+      console.error(e);
+      alert("Operation failed, no data changed");
+    }
+  }
+};
+
+
+window.handleFindPartnerCancel = async function (usDid, his_did, selfNumber, btn) {
+  btn.disabled = true;
+  try {
+    // 1️⃣ SELF TRADE REF
+    const selfRef = doc(db, "users_setting", usDid, "trade_history", his_did);
+    const selfSnap = await getDoc(selfRef);
+
+    if (!selfSnap.exists()) {
+      alert("Trade not found");
+      return;
+    }
+
+    const selfData = selfSnap.data();
+
+    // 2️⃣ CHECK ALREADY ALLOTTED
+    if (selfData.laynaiwalaUsdid && selfData.laynaiwalaUsdid !== "null") {
+      alert("Partner already allotted");
+      location.reload();
+      return;
+    }
+
+    // 3️⃣ FIND AVAILABLE PARTNER
+    const q = query(
+      collection(db, "cancel_trade"),
+      where("is_taken", "==", false),
+      where("temp_name", "==", selfData.temp_name),
+      orderBy("date", "asc"),
+      limit(1)
+    );
+
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      alert("No partner available");
+      return;
+    }
+
+    const partnerDoc = snap.docs[0];
+    const partnerRef = partnerDoc.ref;
+
+    // 4️⃣ TRANSACTION
+    await runTransaction(db, async (transaction) => {
+      const freshPartner = await transaction.get(partnerRef);
+
+      if (freshPartner.get("is_taken") === true) {
+        throw "ALREADY_TAKEN";
+      }
+
+      const {
+        th_did,
+        us_did,
+        number,
+        cancel_charge
+      } = freshPartner.data();
+
+      const partnerTradeRef = doc(
+        db,
+        "users_setting",
+        us_did,
+        "trade_history",
+        th_did
+      );
+
+      const partnerTradeSnap = await transaction.get(partnerTradeRef);
+      if (!partnerTradeSnap.exists()) {
+        throw "TRADE_NOT_FOUND";
+      }
+
+      // MARK PARTNER TAKEN
+      transaction.update(partnerRef, { is_taken: true });
+
+      // UPDATE PARTNER TRADE
+      const updatePartner = {};
+      updatePartner.daynaiwalaNumber = selfNumber;
+      pdatePartner.daynaiwalaUsdid = usDid;
+      updatePartner.daynaiwalaTHdid = his_did;
+      transaction.update(partnerTradeRef, updatePartner);
+
+      // UPDATE SELF TRADE
+      transaction.update(selfRef, {
+        laynaiwalaAmount: cancel_charge,
         laynaiwalaNumber: number,
         laynaiwalaUsdid: us_did,
         laynaiwalaThdid: th_did
