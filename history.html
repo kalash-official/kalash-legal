@@ -959,18 +959,17 @@ window.handleFindPartnerOwner = async function (usDid, his_did, selfNumber, btn,
 
 
 
-let currentVerifyId = null;
-function openVerifyPopup(id) {
+window.openVerifyPopup = function (id) {
   currentVerifyId = id;
   document.getElementById("verifyPin").value = "";
   document.getElementById("verifyPopup").style.display = "flex";
-}
+};
 
-function closeVerifyPopup() {
+window.closeVerifyPopup = function () {
   document.getElementById("verifyPopup").style.display = "none";
-}
+};
 
-function submitVerifyPin() {
+window.submitVerifyPin = function () {
   const pin = document.getElementById("verifyPin").value;
 
   if (pin.length !== 6) {
@@ -981,10 +980,9 @@ function submitVerifyPin() {
   console.log("ID:", currentVerifyId);
   console.log("PIN:", pin);
 
-  // 👉 Yahan aap Firebase / API verify logic laga sakte ho
-
   closeVerifyPopup();
-}
+};
+
 
 
 
