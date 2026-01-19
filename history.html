@@ -263,6 +263,7 @@ body {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, getDoc, collection, query, where, orderBy, limit, getDocs, runTransaction, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAUTZtR_9sM-EXq-AChMtYNh-XBpHXFs3E",
@@ -631,14 +632,118 @@ function partnersUI(d) {
 
 loadTrades();
 
-window.handleFindPartner = function (usDid, his_did) {
-  alert(
-    "Please wait, we are finding a partner for you...\n\n" +
-    "User DID: " + usDid + "\n" +
-    "Trade ID: " + his_did
-  );
+window.handleFindPartner = async function (usDid, his_did) {
+  try {
+    // 1️⃣ SELF TRADE REF
+    const selfRef = doc(db, "users_setting", usDid, "trade_history", his_did);
+    const selfSnap = await getDoc(selfRef);
 
-  // yahan future task likh sakte ho
+    if (!selfSnap.exists()) {
+      alert("Trade not found");
+      return;
+    }
+
+    const selfData = selfSnap.data();
+
+    // 2️⃣ CHECK ALREADY ALLOTTED
+    if (selfData.laynaiwalaUsdid && selfData.laynaiwalaUsdid !== "null") {
+      alert("Partner already allotted");
+      location.reload();
+      return;
+    }
+
+    // 3️⃣ FIND AVAILABLE PARTNER
+    const q = query(
+      collection(db, "negative_trade"),
+      where("is_taken", "==", false),
+      where("temp_name", "==", selfData.temp_name),
+      orderBy("date", "asc"),
+      limit(1)
+    );
+
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      alert("No partner available");
+      return;
+    }
+
+    const partnerDoc = snap.docs[0];
+    const partnerRef = partnerDoc.ref;
+
+    // 4️⃣ TRANSACTION
+    await runTransaction(db, async (transaction) => {
+      const freshPartner = await transaction.get(partnerRef);
+
+      if (freshPartner.get("is_taken") === true) {
+        throw "ALREADY_TAKEN";
+      }
+
+      const {
+        th_did,
+        us_did,
+        party_type,
+        number,
+        div_amount
+      } = freshPartner.data();
+
+      const partnerTradeRef = doc(
+        db,
+        "users_setting",
+        us_did,
+        "trade_history",
+        th_did
+      );
+
+      const partnerTradeSnap = await transaction.get(partnerTradeRef);
+      if (!partnerTradeSnap.exists()) {
+        throw "TRADE_NOT_FOUND";
+      }
+
+      // MARK PARTNER TAKEN
+      transaction.update(partnerRef, { is_taken: true });
+
+      // UPDATE PARTNER TRADE
+      const updatePartner = {};
+      if (party_type === "first") {
+        updatePartner.daynaiwalaFirstAmount = div_amount;
+        updatePartner.daynaiwalaFirstNumber = selfData.own_number;
+        updatePartner.daynaiwalaFirstUsdid = usDid;
+        updatePartner.daynaiwalaFirstTHdid = his_did;
+      } else {
+        updatePartner.daynaiwalaSecondAmount = div_amount;
+        updatePartner.daynaiwalaSecondNumber = selfData.own_number;
+        updatePartner.daynaiwalaSecondUsdid = usDid;
+        updatePartner.daynaiwalaSecondTHdid = his_did;
+      }
+
+      transaction.update(partnerTradeRef, updatePartner);
+
+      // UPDATE SELF TRADE
+      transaction.update(selfRef, {
+        laynaiwalaAmount: div_amount,
+        laynaiwalaNumber: number,
+        laynaiwalaUsdid: us_did,
+        laynaiwalaThdid: th_did
+      });
+
+      // DELETE NEGATIVE_TRADE DOC
+      transaction.delete(partnerRef);
+    });
+
+    // 5️⃣ SUCCESS
+    alert("Partner allotted successfully");
+    location.reload();
+
+  } catch (e) {
+    if (e === "ALREADY_TAKEN") {
+      alert("Partner already taken, retrying...");
+      location.reload();
+    } else {
+      console.error(e);
+      alert("Operation failed, no data changed");
+    }
+  }
 };
 
 
