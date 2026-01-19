@@ -277,6 +277,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const list = document.getElementById("list");
 const usDid = localStorage.getItem("us_did");
+const Number = localStorage.getItem("number");
 
 async function loadTrades() {
   const snap = await getDocs(collection(db, "users_setting", usDid, "trade_history"));
@@ -343,7 +344,7 @@ function buildCardPositive(d, his_did, usDid) {
           ? `<div class="amount">${d.laynaiwalaAmount}</div>` : ``}
 
         ${d.laynaiwalaUsdid === "null"
-          ? `<button class="find-partner-btn"onclick="handleFindPartner('${usDid}', '${his_did}')"> Find Partner </button>`
+          ? `<button class="find-partner-btn"onclick="handleFindPartner('${usDid}', '${his_did}', '${number}')"> Find Partner </button>`
           : `<div class="status">Partner alloted</div>`}
 
         ${d.laynaiwalaUsdid !== "null" && d.laynaiwala_pay_status !== "true"
@@ -631,7 +632,7 @@ function partnersUI(d) {
 
 loadTrades();
 
-window.handleFindPartner = async function (usDid, his_did) {
+window.handleFindPartner = async function (usDid, his_did, number) {
   alert(usDid+"----"+his_did);
   try {
     // 1️⃣ SELF TRADE REF
