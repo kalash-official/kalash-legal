@@ -406,7 +406,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           ? `<div class="amount">${d.own_amount}</div>` : ``}
 
         ${d.own_amount === 0
-          ? `<button class="find-partner-btn" onclick="handleFindPartner('${usDid}', '${his_did}', '${selfNumber}', this)">Find Partner</button>`
+          ? `<button class="find-partner-btn" onclick="handleFindPartnerOwner('${usDid}', '${his_did}', '${selfNumber}', this)">Find Partner</button>`
           : `<div class="status">Partner alloted</div>`}
 
         ${d.own_pay_status === "false" && d.own_amount > 0 
