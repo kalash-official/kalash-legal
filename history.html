@@ -452,7 +452,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           : `<div class="status">Partner alloted</div>`}
 
        ${d.laynaiwalaUsdid !== "null" && d.laynaiwala_pay_status !== "true"
-        ? `<button class="find-partner-btn" onclick="openVerifyPopup('${d.usDid}')"> Verify Payment </button>`: ``}
+        ? `<button class="find-partner-btn" onclick="openVerifyPopup('${d}', "negative", '${usDid}', '${his_did}')"> Verify Payment </button>`: ``}
 
         ${d.laynaiwalaNumber && d.laynaiwalaNumber !== "null"
           ? (() => {
@@ -1006,9 +1006,15 @@ window.handleFindPartnerOwner = async function (usDid, his_did, selfNumber, btn,
 };
 
 
-let currentVerifyId = null;
-window.openVerifyPopup = function (id) {
-  currentVerifyId = id;
+  
+let self_usDid = null;
+let self_his_did = null;
+let gtype_nc = null;
+window.openVerifyPopup = function (d, type_nc, usDid, his_did) {
+  self_usDid = usDid;
+  self_his_did = his_did;
+  gtype_nc = type_nc;
+  
   document.getElementById("verifyPin").value = "";
   document.getElementById("verifyPopup").style.display = "flex";
 };
@@ -1017,20 +1023,195 @@ window.closeVerifyPopup = function () {
   document.getElementById("verifyPopup").style.display = "none";
 };
 
-window.submitVerifyPin = function () {
-  const pin = document.getElementById("verifyPin").value;
+window.submitVerifyPin = async function () {
+  if(gtype_nc === "negative") {
+  const pin = document.getElementById("verifyPin").value.trim();
 
   if (pin.length !== 6) {
     alert("Please enter a valid 6 digit PIN");
     return;
   }
 
-  console.log("ID:", currentVerifyId);
-  console.log("PIN:", pin);
+  try {
+    /* 1️⃣ SELF TRADE REF */
+    const selfRef = doc(
+      db,
+      "users_setting",
+      self_usDid,
+      "trade_history",
+      self_his_did
+    );
 
-  closeVerifyPopup();
+    const selfSnap = await getDoc(selfRef);
+
+    if (!selfSnap.exists()) {
+      alert("Trade not found");
+      return;
+    }
+
+    const selfData = selfSnap.data();
+
+    /* 2️⃣ ALREADY VERIFIED CHECK */
+    if (selfData.laynaiwala_pay_status === "true") {
+      alert("Payment already verified");
+      return;
+    }
+
+    /* 3️⃣ LAYNAIWALA TRADE REF */
+    const {
+      laynaiwalaUsdid,
+      laynaiwalaThdid,
+      laynaiwalaPartyType
+    } = selfData;
+
+    if (!laynaiwalaUsdid || !laynaiwalaThdid) {
+      alert("Partner data missing");
+      return;
+    }
+
+    const laynaiwalaRef = doc(
+      db,
+      "users_setting",
+      laynaiwalaUsdid,
+      "trade_history",
+      laynaiwalaThdid
+    );
+
+    const laynaiwalaSnap = await getDoc(laynaiwalaRef);
+
+    if (!laynaiwalaSnap.exists()) {
+      alert("Partner trade not found");
+      return;
+    }
+
+    const laynaiwalaData = laynaiwalaSnap.data();
+
+    /* 4️⃣ OTP FIELD SELECT */
+    const otp =
+      laynaiwalaPartyType === "first"
+        ? laynaiwalaData.otp_first
+        : laynaiwalaData.otp_second;
+
+    if (!otp) {
+      alert("PIN not generated yet");
+      return;
+    }
+
+    /* 5️⃣ PIN MATCH */
+    if (Number(pin) !== Number(otp)) {
+      alert("Wrong PIN");
+      return;
+    }
+
+    /* 6️⃣ UPDATE BOTH DOCUMENTS */
+    await updateDoc(laynaiwalaRef, {
+      [laynaiwalaPartyType === "first"
+        ? "paymentStatusFirst"
+        : "paymentStatusSecond"]: "true"
+    });
+
+    await updateDoc(selfRef, {
+      laynaiwala_pay_status: "true"
+    });
+
+    alert("Payment verified successfully");
+    closeVerifyPopup();
+    location.reload();
+
+  } catch (e) {
+    console.error(e);
+    alert("Verification failed");
+  }
+  } else if(gtype_nc === "cancel") {
+     const pin = document.getElementById("verifyPin").value.trim();
+
+  if (pin.length !== 6) {
+    alert("Please enter a valid 6 digit PIN");
+    return;
+  }
+
+  try {
+    /* 1️⃣ SELF TRADE REF */
+    const selfRef = doc(
+      db,
+      "users_setting",
+      self_usDid,
+      "trade_history",
+      self_his_did
+    );
+
+    const selfSnap = await getDoc(selfRef);
+
+    if (!selfSnap.exists()) {
+      alert("Trade not found");
+      return;
+    }
+
+    const selfData = selfSnap.data();
+
+    /* 2️⃣ ALREADY VERIFIED CHECK */
+    if (selfData.cancellaynaiwala_pay_status === "true") {
+      alert("Payment already verified");
+      return;
+    }
+
+    /* 3️⃣ LAYNAIWALA TRADE REF */
+    const {
+      cancellaynaiwalaUsdid,
+      cancellaynaiwalaThdid,
+    } = selfData;
+
+    if (!cancellaynaiwalaUsdid || !cancellaynaiwalaThdid) {
+      alert("Partner data missing");
+      return;
+    }
+
+    const laynaiwalaRef = doc(
+      db,
+      "users_setting",
+      cancellaynaiwalaUsdid,
+      "trade_history",
+      cancellaynaiwalaThdid
+    );
+
+    const laynaiwalaSnap = await getDoc(laynaiwalaRef);
+
+    if (!laynaiwalaSnap.exists()) {
+      alert("Partner trade not found");
+      return;
+    }
+
+    const laynaiwalaData = laynaiwalaSnap.data();
+
+    /* 4️⃣ OTP FIELD SELECT */
+    const otp =laynaiwalaData.otp;
+
+    if (!otp) {
+      alert("PIN not generated yet");
+      return;
+    }
+
+    /* 5️⃣ PIN MATCH */
+    if (Number(pin) !== Number(otp)) {
+      alert("Wrong PIN");
+      return;
+    }
+
+    /* 6️⃣ UPDATE BOTH DOCUMENTS */
+    await updateDoc(laynaiwalaRef, { paystatus : "true"});
+
+    await updateDoc(selfRef, { cancellaynaiwala_pay_status: "true"});
+
+    alert("Payment verified successfully");
+    closeVerifyPopup();
+    location.reload();
+
+  } catch (e) {
+    console.error(e);
+    alert("Verification failed");
+  }
+  }
 };
-
 
 
 
