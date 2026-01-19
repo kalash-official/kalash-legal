@@ -346,11 +346,6 @@ function buildCardPositive(d, his_did) {
           ? `<button class="find-partner-btn" onclick="findPartner('${d.id}')">Find Partner</button>`
           : `<div class="status">Partner alloted</div>`}
 
-        // ${d.laynaiwalaUsdid === "null" 
-        //   ? `<button class="find-partner-btn" onclick="handleFindPartner('${d.id}')"> Find Partner  </button>`
-        //   : `<div class="status">Partner alloted</div>`}
-
-
         ${d.laynaiwalaUsdid !== "null" && d.laynaiwala_pay_status !== "true"
           ? `<button class="find-partner-btn" onclick="findPartner('${d.id}')">Verify Payment</button>`
           : ``}
