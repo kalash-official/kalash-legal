@@ -252,6 +252,62 @@ body {
 @media (min-width: 900px) {
   .card { max-width: 460px; }
 }
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popup-box {
+  background: #fff;
+  width: 300px;
+  padding: 20px;
+  border-radius: 12px;
+  position: relative;
+  text-align: center;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.popup-box h3 {
+  margin-bottom: 16px;
+}
+
+.popup-box input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 4px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.submit-btn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #28a745;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
 
 
 </style>
@@ -347,9 +403,8 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           ? `<button class="find-partner-btn"onclick="handleFindPartner('${usDid}', '${his_did}', '${selfNumber}', this)"> Find Partner </button>`
           : `<div class="status">Partner alloted</div>`}
 
-        ${d.laynaiwalaUsdid !== "null" && d.laynaiwala_pay_status !== "true"
-          ? `<button class="find-partner-btn" onclick="findPartner('${d.id}')">Verify Payment</button>`
-          : ``}
+       ${d.laynaiwalaUsdid !== "null" && d.laynaiwala_pay_status !== "true"
+        ? `<button class="find-partner-btn" onclick="openVerifyPopup('${d.usDid}')"> Verify Payment </button>`: ``}
 
         ${d.laynaiwalaNumber && d.laynaiwalaNumber !== "null"
           ? (() => {
@@ -410,7 +465,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           : `<div class="status">Partner alloted</div>`}
 
         ${d.own_pay_status === "false" && d.own_amount > 0 
-          ? `<button class="find-partner-btn" onclick="handleFindPartnerOwner('${usDid}', '${his_did}', '${selfNumber}', this)"> Make Payment ${d.own_amount} </button>` : ``}
+          ? `<button class="find-partner-btn" onclick="makePayment('${usDid}', '${his_did}', '${selfNumber}', this)"> Make Payment ${d.own_amount} </button>` : ``}
           
       </div>
 
@@ -469,9 +524,7 @@ function buildCardNegative(d, his_did) {
       );
       return `
         <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">
-          <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20.52 3.48A11.78 11.78 0 0012 0 11.8 11.8 0 000 12a11.7 11.7 0 001.67 6.03L0 24l6.15-1.62A11.82 11.82 0 0012 24a11.8 11.8 0 008.35-20.52zm-8.52 19.1a9.5 9.5 0 01-4.85-1.33l-.35-.2-3.65.96.97-3.56-.22-.37A9.48 9.48 0 1122.5 12a9.5 9.5 0 01-10.5 10.58zm5.22-7.18c-.29-.14-1.7-.84-1.97-.94s-.47-.14-.67.14-.77.94-.94 1.14-.34.21-.63.07a7.75 7.75 0 01-2.29-1.41 8.52 8.52 0 01-1.57-1.96c-.16-.29 0-.45.12-.59.12-.12.29-.34.43-.51.14-.17.19-.29.29-.48s.05-.36-.02-.5c-.07-.14-.67-1.61-.92-2.21s-.48-.5-.67-.5h-.57c-.19 0-.5.07-.77.36s-1 1-1 2.43 1.02 2.82 1.16 3.02c.14.19 2 3.05 4.85 4.28.68.29 1.21.46 1.62.59.68.22 1.29.19 1.78.12.54-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.33z"/>
-          </svg>
+         
           ${d.daynaiwalaFirstNumber}
         </a>
       `;
@@ -492,17 +545,8 @@ function buildCardNegative(d, his_did) {
   : (() => {
       const phone = d.daynaiwalaSecondNumber.replace(/[^0-9]/g,'');
       const amount = d.daynaiwalaSecondAmount || '';
-      const message = encodeURIComponent(
-        `Hello, please make the payment of ₹${amount}. Once the payment is completed, I will share the PIN with you. Thank you.`
-      );
-      return `
-        <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">
-          <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20.52 3.48A11.78 11.78 0 0012 0 11.8 11.8 0 000 12a11.7 11.7 0 001.67 6.03L0 24l6.15-1.62A11.82 11.82 0 0012 24a11.8 11.8 0 008.35-20.52zm-8.52 19.1a9.5 9.5 0 01-4.85-1.33l-.35-.2-3.65.96.97-3.56-.22-.37A9.48 9.48 0 1122.5 12a9.5 9.5 0 01-10.5 10.58zm5.22-7.18c-.29-.14-1.7-.84-1.97-.94s-.47-.14-.67.14-.77.94-.94 1.14-.34.21-.63.07a7.75 7.75 0 01-2.29-1.41 8.52 8.52 0 01-1.57-1.96c-.16-.29 0-.45.12-.59.12-.12.29-.34.43-.51.14-.17.19-.29.29-.48s.05-.36-.02-.5c-.07-.14-.67-1.61-.92-2.21s-.48-.5-.67-.5h-.57c-.19 0-.5.07-.77.36s-1 1-1 2.43 1.02 2.82 1.16 3.02c.14.19 2 3.05 4.85 4.28.68.29 1.21.46 1.62.59.68.22 1.29.19 1.78.12.54-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.33z"/>
-          </svg>
-          ${d.daynaiwalaSecondNumber}
-        </a>
-      `;
+      const message = encodeURIComponent( `Hello, please make the payment of ₹${amount}. Once the payment is completed, I will share the PIN with you. Thank you.` );
+      return ` <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">${d.daynaiwalaSecondNumber} </a>`;
     })()
 }
       </div>
@@ -559,9 +603,6 @@ function buildCardCancel(d, his_did) {
       );
       return `
         <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">
-          <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20.52 3.48A11.78 11.78 0 0012 0 11.8 11.8 0 000 12a11.7 11.7 0 001.67 6.03L0 24l6.15-1.62A11.82 11.82 0 0012 24a11.8 11.8 0 008.35-20.52zm-8.52 19.1a9.5 9.5 0 01-4.85-1.33l-.35-.2-3.65.96.97-3.56-.22-.37A9.48 9.48 0 1122.5 12a9.5 9.5 0 01-10.5 10.58zm5.22-7.18c-.29-.14-1.7-.84-1.97-.94s-.47-.14-.67.14-.77.94-.94 1.14-.34.21-.63.07a7.75 7.75 0 01-2.29-1.41 8.52 8.52 0 01-1.57-1.96c-.16-.29 0-.45.12-.59.12-.12.29-.34.43-.51.14-.17.19-.29.29-.48s.05-.36-.02-.5c-.07-.14-.67-1.61-.92-2.21s-.48-.5-.67-.5h-.57c-.19 0-.5.07-.77.36s-1 1-1 2.43 1.02 2.82 1.16 3.02c.14.19 2 3.05 4.85 4.28.68.29 1.21.46 1.62.59.68.22 1.29.19 1.78.12.54-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.33z"/>
-          </svg>
           ${d.daynaiwalaNumber}
         </a>
       `;
@@ -918,7 +959,62 @@ window.handleFindPartnerOwner = async function (usDid, his_did, selfNumber, btn,
 
 
 
+let currentVerifyId = null;
+function openVerifyPopup(id) {
+  currentVerifyId = id;
+  document.getElementById("verifyPin").value = "";
+  document.getElementById("verifyPopup").style.display = "flex";
+}
+
+function closeVerifyPopup() {
+  document.getElementById("verifyPopup").style.display = "none";
+}
+
+function submitVerifyPin() {
+  const pin = document.getElementById("verifyPin").value;
+
+  if (pin.length !== 6) {
+    alert("Please enter a valid 6 digit PIN");
+    return;
+  }
+
+  console.log("ID:", currentVerifyId);
+  console.log("PIN:", pin);
+
+  // 👉 Yahan aap Firebase / API verify logic laga sakte ho
+
+  closeVerifyPopup();
+}
+
+
+
+
 
 </script>
+
+
+<!-- Verify Payment Popup -->
+<div id="verifyPopup" class="popup-overlay">
+  <div class="popup-box">
+
+    <!-- Close Icon -->
+    <div class="popup-close" onclick="closeVerifyPopup()">✕</div>
+
+    <h3>Enter 6 Digit PIN</h3>
+
+    <input
+      type="text"
+      id="verifyPin"
+      maxlength="6"
+      placeholder="Enter PIN"
+      oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+    />
+
+    <button class="submit-btn" onclick="submitVerifyPin()">
+      Submit
+    </button>
+  </div>
+</div>
+
 </body>
 </html>
