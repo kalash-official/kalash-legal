@@ -763,7 +763,7 @@ window.handleFindPartnerCancel = async function (usDid, his_did, selfNumber, btn
     const selfData = selfSnap.data();
 
     // 2️⃣ CHECK ALREADY ALLOTTED
-    if (selfData.laynaiwalaUsdid && selfData.laynaiwalaUsdid !== "null") {
+    if (selfData.cancellaynaiwalaUsdid && selfData.cancellaynaiwalaUsdid !== "null") {
       alert("Partner already allotted");
       location.reload();
       return;
