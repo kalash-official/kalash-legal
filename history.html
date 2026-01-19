@@ -958,7 +958,7 @@ window.handleFindPartnerOwner = async function (usDid, his_did, selfNumber, btn,
 };
 
 
-
+let currentVerifyId = null;
 window.openVerifyPopup = function (id) {
   currentVerifyId = id;
   document.getElementById("verifyPin").value = "";
