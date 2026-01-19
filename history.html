@@ -277,7 +277,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const list = document.getElementById("list");
 const usDid = localStorage.getItem("us_did");
-const Number = localStorage.getItem("number");
+const selfNumber = localStorage.getItem("number");
 
 async function loadTrades() {
   const snap = await getDocs(collection(db, "users_setting", usDid, "trade_history"));
@@ -292,7 +292,7 @@ async function loadTrades() {
     const his_did = doc.id;
     let html = "";
 
-    if (d.result === "positive") html = buildCardPositive(d, his_did, usDid);
+    if (d.result === "positive") html = buildCardPositive(d, his_did, usDid, selfNumber);
     else if (d.result === "negative" || d.result === "incomplete negative") html = buildCardNegative(d, his_did);
     else if (d.result === "cancel") html = buildCardCancel(d, his_did);
     else if (d.result === "incomplete positive") html = buildCardIncompletePositive(d, his_did);
@@ -306,7 +306,7 @@ async function loadTrades() {
 }
 
 /* POSITIVE */
-function buildCardPositive(d, his_did, usDid) {
+function buildCardPositive(d, his_did, usDid, selfNumber) {
   return `
     <div class="row">
       <div class="company">${d.name || "Company"}</div>
@@ -344,7 +344,7 @@ function buildCardPositive(d, his_did, usDid) {
           ? `<div class="amount">${d.laynaiwalaAmount}</div>` : ``}
 
         ${d.laynaiwalaUsdid === "null"
-          ? `<button class="find-partner-btn"onclick="handleFindPartner('${usDid}', '${his_did}', '${number}')"> Find Partner </button>`
+          ? `<button class="find-partner-btn"onclick="handleFindPartner('${usDid}', '${his_did}', '${selfNumber}')"> Find Partner </button>`
           : `<div class="status">Partner alloted</div>`}
 
         ${d.laynaiwalaUsdid !== "null" && d.laynaiwala_pay_status !== "true"
@@ -632,7 +632,7 @@ function partnersUI(d) {
 
 loadTrades();
 
-window.handleFindPartner = async function (usDid, his_did, number) {
+window.handleFindPartner = async function (usDid, his_did, selfNumber) {
   alert(usDid+"----"+his_did);
   try {
     // 1️⃣ SELF TRADE REF
@@ -708,12 +708,12 @@ window.handleFindPartner = async function (usDid, his_did, number) {
       const updatePartner = {};
       if (party_type === "first") {
         updatePartner.daynaiwalaFirstAmount = div_amount;
-        updatePartner.daynaiwalaFirstNumber = number;
+        updatePartner.daynaiwalaFirstNumber = selfNumber;
         updatePartner.daynaiwalaFirstUsdid = usDid;
         updatePartner.daynaiwalaFirstTHdid = his_did;
       } else {
         updatePartner.daynaiwalaSecondAmount = div_amount;
-        updatePartner.daynaiwalaSecondNumber = number;
+        updatePartner.daynaiwalaSecondNumber = selfNumber;
         updatePartner.daynaiwalaSecondUsdid = usDid;
         updatePartner.daynaiwalaSecondTHdid = his_did;
       }
