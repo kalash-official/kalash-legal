@@ -291,7 +291,7 @@ async function loadTrades() {
     const his_did = doc.id;
     let html = "";
 
-    if (d.result === "positive") html = buildCardPositive(d, his_did);
+    if (d.result === "positive") html = buildCardPositive(d, his_did, usDid);
     else if (d.result === "negative" || d.result === "incomplete negative") html = buildCardNegative(d, his_did);
     else if (d.result === "cancel") html = buildCardCancel(d, his_did);
     else if (d.result === "incomplete positive") html = buildCardIncompletePositive(d, his_did);
@@ -305,7 +305,7 @@ async function loadTrades() {
 }
 
 /* POSITIVE */
-function buildCardPositive(d, his_did) {
+function buildCardPositive(d, his_did, usDid) {
   return `
     <div class="row">
       <div class="company">${d.name || "Company"}</div>
@@ -343,7 +343,7 @@ function buildCardPositive(d, his_did) {
           ? `<div class="amount">${d.laynaiwalaAmount}</div>` : ``}
 
         ${d.laynaiwalaUsdid === "null"
-          ? `<button class="find-partner-btn" onclick="handleFindPartner('${d.id}')">Find Partner</button>`
+          ? `<button class="find-partner-btn" onclick="handleFindPartner(usDid, his_did)">Find Partner</button>`
           : `<div class="status">Partner alloted</div>`}
 
         ${d.laynaiwalaUsdid !== "null" && d.laynaiwala_pay_status !== "true"
@@ -631,11 +631,11 @@ function partnersUI(d) {
 
 loadTrades();
 
- function handleFindPartner(id) {
-  alert("Please wait, we are finding a partner for you...");
+ function handleFindPartner(usDid, his_did) {
+  alert("Please wait, we are finding a partner for you... "+ usDid +"()"+ his_did);
   
   // ✅ Alert ke baad task
-  findPartner(id);
+  
 }
 
 
