@@ -708,12 +708,12 @@ window.handleFindPartner = async function (usDid, his_did, number) {
       const updatePartner = {};
       if (party_type === "first") {
         updatePartner.daynaiwalaFirstAmount = div_amount;
-        updatePartner.daynaiwalaFirstNumber = selfData.own_number;
+        updatePartner.daynaiwalaFirstNumber = number;
         updatePartner.daynaiwalaFirstUsdid = usDid;
         updatePartner.daynaiwalaFirstTHdid = his_did;
       } else {
         updatePartner.daynaiwalaSecondAmount = div_amount;
-        updatePartner.daynaiwalaSecondNumber = selfData.own_number;
+        updatePartner.daynaiwalaSecondNumber = number;
         updatePartner.daynaiwalaSecondUsdid = usDid;
         updatePartner.daynaiwalaSecondTHdid = his_did;
       }
