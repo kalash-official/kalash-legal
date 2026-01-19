@@ -828,10 +828,10 @@ window.handleFindPartnerCancel = async function (usDid, his_did, selfNumber, btn
 
       // UPDATE SELF TRADE
       transaction.update(selfRef, {
-        laynaiwalaAmount: cancel_charge,
-        laynaiwalaNumber: number,
-        laynaiwalaUsdid: us_did,
-        laynaiwalaThdid: th_did
+        cancellaynaiwalaAmount: cancel_charge,
+        cancellaynaiwalaNumber: number,
+        cancellaynaiwalaUsdid: us_did,
+        cancellaynaiwalaThdid: th_did
       });
 
       // DELETE NEGATIVE_TRADE DOC
