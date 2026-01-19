@@ -153,7 +153,7 @@ window.loginUser = async function () {
   const userSnapshot = snapshot.docs[0];
   const userDoc = userSnapshot.data();
   const userId = userSnapshot.id;
-  const phone = userDoc.number;
+  const self_phone = userDoc.number;
 
   if (userDoc.history_pass !== pass) {
     alert("Wrong password");
@@ -162,7 +162,7 @@ window.loginUser = async function () {
 
   // Save document id locally
   localStorage.setItem("us_did", userId);
-  localStorage.setItem("number", phone);
+  localStorage.setItem("number", self_phone);
 
   // Redirect and prevent back
   window.location.replace("history.html");
