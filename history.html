@@ -632,6 +632,7 @@ function partnersUI(d) {
 loadTrades();
 
 window.handleFindPartner = async function (usDid, his_did) {
+  alert(usDid+"----"+his_did);
   try {
     // 1️⃣ SELF TRADE REF
     const selfRef = doc(db, "users_setting", usDid, "trade_history", his_did);
