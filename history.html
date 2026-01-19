@@ -415,9 +415,13 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
         ${d.own_amount && d.own_amount !== "null"
           ? `<div class="amount">${d.own_amount}</div>` : ``}
 
-        ${d.own_pay_status === "false"
+        ${d.own_amount === 0
           ? `<button class="find-partner-btn" onclick="handleFindPartner('${d.id}')">Find Partner</button>`
           : `<div class="status">Partner alloted</div>`}
+
+        ${d.own_pay_status === "false" && d.own_amount > 0 
+          ? `<button class="find-partner-btn" onclick="handleFindPartner('${usDid}', '${his_did}', '${selfNumber}', this)"> Make Payment ${d.own_amount} </button>` : ``}
+          
       </div>
 
     </div>
@@ -725,7 +729,8 @@ window.handleFindPartner = async function (usDid, his_did, selfNumber, btn) {
         laynaiwalaAmount: div_amount,
         laynaiwalaNumber: number,
         laynaiwalaUsdid: us_did,
-        laynaiwalaThdid: th_did
+        laynaiwalaThdid: th_did,
+        laynaiwalaPartyType: party_type
       });
 
       // DELETE NEGATIVE_TRADE DOC
