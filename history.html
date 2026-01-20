@@ -713,10 +713,27 @@ function buildCardCancel(d, his_did) {
   `;
 }
 
-function formatDateTime(dateStr) {
-  if (!dateStr) return "--";
+function formatDateTime(value) {
+  if (!value) return "--";
 
-  const d = new Date(dateStr);
+  let d;
+
+  // Firebase Timestamp
+  if (typeof value === "object" && value.seconds) {
+    d = new Date(value.seconds * 1000);
+  }
+  // Number timestamp
+  else if (!isNaN(value)) {
+    d = new Date(Number(value));
+  }
+  // String date
+  else if (typeof value === "string") {
+    // Fix "YYYY-MM-DD HH:mm:ss" → ISO
+    const fixed = value.replace(" ", "T");
+    d = new Date(fixed);
+  }
+
+  if (!d || isNaN(d.getTime())) return "--";
 
   return d.toLocaleString("en-GB", {
     day: "2-digit",
@@ -728,6 +745,7 @@ function formatDateTime(dateStr) {
     hour12: false
   });
 }
+
 
 function buildCardIncompletePositive(d, his_did) {
   return `
