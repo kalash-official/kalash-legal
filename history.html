@@ -354,6 +354,31 @@ body {
   }
 }
 
+  .card-wrapper {
+  position: relative;
+}
+
+.date-chip {
+  position: absolute;
+  top: -10px;
+  right: 12px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  z-index: 5;
+  cursor: pointer;
+  user-select: none;
+}
+
+.date-chip:active {
+  transform: scale(0.96);
+}
+
+
 
 
 
@@ -679,59 +704,74 @@ function buildCardCancel(d, his_did) {
 /* INCOMPLETE POSITIVE */
 function buildCardIncompletePositive(d, his_did) {
   return `
-    <div class="row">
-      <div class="company">${d.name || "Company"}</div>
-      <div class="top-right green">${d.result || "---"}</div>
+    <div class="date-chip">
+      ${d.date || d.created_at || "--"}
     </div>
 
-    <div class="divider"></div>
-
-    <div class="row">
-      <div class="muted">Entry: ${d.entry_at || "---"}</div>
-      <div class="muted">Exit: ${d.exit_at || "---"}</div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="row">
-      <div class="label">Profit</div>
-      <div class="profit green">
-        ${d.quantity && d.entry_at && d.exit_at ? d.quantity * (d.exit_at - d.entry_at) : "---"}
+    <div class="card">
+      <div class="row">
+        <div class="company">${d.name || "Company"}</div>
+        <div class="top-right green">${d.result || "---"}</div>
       </div>
-    </div>
 
-    <div class="dist"><div>Profit Distribution</div></div>
+      <div class="divider"></div>
 
-    <div class="profiles">
+      <div class="row">
+        <div class="muted">Entry: ${d.entry_at || "---"}</div>
+        <div class="muted">Exit: ${d.exit_at || "---"}</div>
+      </div>
 
-    <!-- SELF -->
-      <div class="profile">
-        <div class="avatar">
-          <img src="profile.png">
+      <div class="divider"></div>
+
+      <div class="row">
+        <div class="label">Profit</div>
+        <div class="profit green">
+          ${d.quantity && d.entry_at && d.exit_at
+            ? d.quantity * (d.exit_at - d.entry_at)
+            : "---"}
+        </div>
+      </div>
+
+      <div class="dist"><div>Profit Distribution</div></div>
+
+      <div class="profiles">
+
+        <!-- SELF -->
+        <div class="profile">
+          <div class="avatar">
+            <img src="profile.png">
+          </div>
+          <div class="amount">${d.self_amount}</div>
+          <div class="status">SELF</div>
         </div>
 
-        <div class="amount">${d.self_amount}</div>
-        <div class="status">SELF</div>
-      </div>
+        <!-- OWN -->
+        <div class="profile">
+          <div class="avatar">
+            <img src="profile.png">
+            <span class="badge" style="display:${d.own_pay_status === "true" ? "inline" : "none"}">✔</span>
+          </div>
 
-      <!-- OWN -->
-      <div class="profile">
-        <div class="avatar">
-          <img src="profile.png">
-          <span class="badge" style="display:${d.own_pay_status === "true" ? "inline" : "none"}">✔</span>
+          ${d.own_amount && d.own_amount !== "null"
+            ? `<div class="amount">${d.own_amount}</div>`
+            : ``}
+
+          ${d.own_pay_status === "false"
+            ? `<button class="find-partner-btn"
+                onclick="makePayment('${usDid}','${his_did}','${selfNumber}',this)">
+                Make Payment ${d.own_amount}
+              </button>`
+            : ``}
         </div>
 
-        ${d.own_amount && d.own_amount !== "null" ? `<div class="amount">${d.own_amount}</div>` : ``}
-        ${d.own_pay_status === "false" ? `<button class="find-partner-btn" onclick="makePayment('${usDid}', '${his_did}', '${selfNumber}', this)"> Make Payment ${d.own_amount} </button>` : ``}
-          
       </div>
 
+      <div class="hint">Tap on number to chat directly with your partner</div>
+      <div class="uid">UID: ${his_did}</div>
     </div>
-
-    <div class="hint">Tap on number to chat directly with your partner</div>
-    <div class="uid">UID: ${his_did}</div>
   `;
 }
+
 
 loadTrades();
 
