@@ -452,7 +452,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           : `<div class="status">Partner alloted</div>`}
 
        ${d.laynaiwalaUsdid !== "null" && d.laynaiwala_pay_status !== "true"
-        ? `<button class="find-partner-btn" onclick="openVerifyPopup('${d}', "negative", '${usDid}', '${his_did}')"> Verify Payment </button>`: ``}
+        ? `<button class="find-partner-btn" onclick="openVerifyPopup('${d}', 'negative', '${usDid}', '${his_did}')"> Verify Payment </button>`: ``}
 
         ${d.laynaiwalaNumber && d.laynaiwalaNumber !== "null"
           ? (() => {
