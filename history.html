@@ -443,7 +443,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           <img src="profile.png">
         </div>
 
-        <div class="amount">${( 0.4 * ((Number(d.entry_at) - Number(d.exit_at)) * Number(d.quantity))).toFixed(2)}</div>
+        <div class="amount">${( 0.4 * ((Number(d.exit_at) - Number(d.entry_at)) * Number(d.quantity))).toFixed(2)}</div>
         <div class="status">SELF</div>
       </div>
 
