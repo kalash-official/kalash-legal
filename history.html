@@ -437,6 +437,38 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
 
     <div class="profiles">
 
+    <!-- self -->
+      <div class="profile">
+        <div class="avatar">
+          <img src="profile.png">
+          <span class="badge" style="display:${d.laynaiwala_pay_status === "true" ? "inline" : "none"}">✔</span>
+        </div>
+
+        ${d.laynaiwalaAmount && d.laynaiwalaAmount !== "null"
+          ? `<div class="amount">${d.laynaiwalaAmount}</div>` : ``}
+
+        ${d.laynaiwalaUsdid === "null"
+          ? `<button class="find-partner-btn"onclick="handleFindPartner('${usDid}', '${his_did}', '${selfNumber}', this)"> Find Partner </button>`
+          : `<div class="status">Partner alloted</div>`}
+
+       ${d.laynaiwalaUsdid !== "null" && d.laynaiwala_pay_status !== "true"
+        ? `<button class="find-partner-btn" onclick="openVerifyPopup('${d}', 'negative', '${usDid}', '${his_did}')"> Verify Payment </button>`: ``}
+
+        ${d.laynaiwalaNumber && d.laynaiwalaNumber !== "null"
+          ? (() => {
+              const phone = d.laynaiwalaNumber.replace(/[^0-9]/g, "");
+              const message = encodeURIComponent(
+                `Hello, I have made the payment of ${d.laynaiwalaAmount || ""}. Please share the PIN so that my account can be unblocked. Thank you.`
+              );
+              return `
+                <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">${d.laynaiwalaNumber}</a>
+              `;
+            })()
+          : ``}
+      </div>
+
+    
+
       <!-- LAYNAIWALA -->
       <div class="profile">
         <div class="avatar">
