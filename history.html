@@ -449,6 +449,10 @@ async function loadTrades() {
 /* POSITIVE */
 function buildCardPositive(d, his_did, usDid, selfNumber) {
   return `
+    <div class="row row-center">
+      <div class="date-center">${formatDateTime(d.date)}</div>
+    </div>
+    
     <div class="row">
       <div class="company">${d.name || "Company"}</div>
       <div class="top-right green">${d.result || "---"}</div>
@@ -580,6 +584,10 @@ function buildCardNegative(d, his_did) {
   const secondAmt = Number(d.daynaiwalaSecondAmount || 0);
 
   return `
+     <div class="row row-center">
+      <div class="date-center">${formatDateTime(d.date)}</div>
+    </div>
+    
     <div class="row">
       <div class="company">${d.name || "Company"}</div>
       <div class="top-right red">${d.result || "---"}</div>
@@ -660,6 +668,10 @@ function buildCardCancel(d, his_did) {
   const Amt = Number(d.cancel_charge || 0);
 
   return `
+     <div class="row row-center">
+      <div class="date-center">${formatDateTime(d.date)}</div>
+    </div>
+    
     <div class="row">
       <div class="company">${d.name || "Company"}</div>
       <div class="top-right red">${d.result || "---"}</div>
