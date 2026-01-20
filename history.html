@@ -399,7 +399,7 @@ async function loadTrades() {
     if (d.result === "positive") html = buildCardPositive(d, his_did, usDid, selfNumber);
     else if (d.result === "negative" || d.result === "incomplete negative") html = buildCardNegative(d, his_did);
     else if (d.result === "cancel") html = buildCardCancel(d, his_did);
-    else if (d.result === "incomplete positive") html = buildCardIncompletePositive(d, his_did);
+    else if (d.result === "incomplete positive") html = buildCardIncompletePositive(d);
     else html = buildCardDefault(d, his_did);
 
     const card = document.createElement("div");
