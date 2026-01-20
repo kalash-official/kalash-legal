@@ -488,8 +488,6 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
         <div class="status">SELF</div>
       </div>
 
-    
-
       <!-- LAYNAIWALA -->
       <div class="profile">
         <div class="avatar">
@@ -558,18 +556,13 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           <span class="badge" style="display:${d.own_pay_status === "true" ? "inline" : "none"}">✔</span>
         </div>
 
-        ${d.own_amount && d.own_amount !== "null"
-          ? `<div class="amount">${d.own_amount}</div>` : ``}
+        ${d.own_amount && d.own_amount !== "null" ? `<div class="amount">${d.own_amount}</div>` : ``}
 
-        ${d.own_amount === 0
-          ? `<button class="find-partner-btn" onclick="handleFindPartnerOwner('${usDid}', '${his_did}', '${selfNumber}', this,  '${d}')">Find Partner</button>`
-          : `<div class="status">Partner alloted</div>`}
+        ${d.own_amount === 0 ? `<button class="find-partner-btn" onclick="handleFindPartnerOwner('${usDid}', '${his_did}', '${selfNumber}', this,  '${d}')">Find Partner</button>` : `<div class="status">Partner alloted</div>`}
 
-        ${d.own_pay_status === "false" && d.own_amount > 0 
-          ? `<button class="find-partner-btn" onclick="makePayment('${usDid}', '${his_did}', '${selfNumber}', this)"> Make Payment ${d.own_amount} </button>` : ``}
+        ${d.own_pay_status === "false" && d.own_amount > 0 ? `<button class="find-partner-btn" onclick="makePayment('${usDid}', '${his_did}', '${selfNumber}', this)"> Make Payment ${d.own_amount} </button>` : ``}
           
       </div>
-
     </div>
 
     <div class="hint">Tap on number to chat directly with your partner</div>
@@ -619,22 +612,13 @@ function buildCardNegative(d, his_did) {
         </div>
         <div class="amount"> ${d.daynaiwalaFirstAmount || "---"}</div>
         <div class="status">${String(d.daynaiwalaFirstUsdid) === "null" ? "Pending" : "Partner alloted"}</div>
-        ${d.daynaiwalaFirstNumber === "null" 
-  ? `<div class="wa_number">--</div>` 
-  : (() => {
-      const phone = d.daynaiwalaFirstNumber.replace(/[^0-9]/g,'');
-      const amount = d.daynaiwalaFirstAmount || '';
-      const message = encodeURIComponent(
-        `Hello, please make the payment of ${d.daynaiwalaFirstAmount}. Once the payment is completed, I will share the PIN with you. Thank you.`
-      );
-      return `
-        <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">
-         
-          ${d.daynaiwalaFirstNumber}
-        </a>
-      `;
-    })()
-}
+        ${d.daynaiwalaFirstNumber === "null" ? `<div class="wa_number">--</div>` 
+         : (() => {
+           const phone = d.daynaiwalaFirstNumber.replace(/[^0-9]/g,'');
+           const amount = d.daynaiwalaFirstAmount || '';
+           const message = encodeURIComponent(`Hello, please make the payment of ${d.daynaiwalaFirstAmount}. Once the payment is completed, I will share the PIN with you. Thank you.`);
+           return `<a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">${d.daynaiwalaFirstNumber} </a> `;
+          })()}
       </div>
 
       <div class="profile">
@@ -645,17 +629,15 @@ function buildCardNegative(d, his_did) {
         </div>
         <div class="amount">${d.daynaiwalaSecondAmount || "---"}</div>
         <div class="status">${String(d.daynaiwalaSecondUsdid) === "null" ? "Pending" : "Partner alloted"}</div>
-       ${d.daynaiwalaSecondNumber === "null" 
-  ? `<div class="wa_number">--</div>` 
-  : (() => {
-      const phone = d.daynaiwalaSecondNumber.replace(/[^0-9]/g,'');
-      const amount = d.daynaiwalaSecondAmount || '';
-      const message = encodeURIComponent( `Hello, please make the payment of ₹${amount}. Once the payment is completed, I will share the PIN with you. Thank you.` );
-      return ` <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">${d.daynaiwalaSecondNumber} </a>`;
-    })()
-}
+       ${d.daynaiwalaSecondNumber === "null" ? `<div class="wa_number">--</div>` 
+       : (() => {
+                const phone = d.daynaiwalaSecondNumber.replace(/[^0-9]/g,'');
+                const amount = d.daynaiwalaSecondAmount || '';
+                const message = encodeURIComponent( `Hello, please make the payment of ₹${amount}. Once the payment is completed, I will share the PIN with you. Thank you.` );
+                return ` <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">${d.daynaiwalaSecondNumber} </a>`;
+              })()}
+        </div>
       </div>
-    </div>
 
     <div class="hint">Tap on number to chat directly with your partner</div>
     <div class="uid">UID: ${his_did}</div>
@@ -702,21 +684,13 @@ function buildCardCancel(d, his_did) {
         </div>
         <div class="amount"> ${Amt || "---"}</div>
         <div class="status">${String(d.daynaiwalaUsdid) === "null" ? "Pending" : "Partner alloted"}</div>
-        ${d.daynaiwalaNumber === "null" 
-  ? `<div class="wa_number">--</div>` 
-  : (() => {
-      const phone = d.daynaiwalaNumber.replace(/[^0-9]/g,'');
-      const amount = Amt || '';
-      const message = encodeURIComponent(
-        `Hello, please make the payment of ${d.Amt}. Once the payment is completed, I will share the PIN with you. Thank you.`
-      );
-      return `
-        <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank">
-          ${d.daynaiwalaNumber}
-        </a>
-      `;
-    })()
-}
+        ${d.daynaiwalaNumber === "null" ? `<div class="wa_number">--</div>` 
+        : (() => {
+                const phone = d.daynaiwalaNumber.replace(/[^0-9]/g,'');
+                const amount = Amt || '';
+                const message = encodeURIComponent( `Hello, please make the payment of ${d.Amt}. Once the payment is completed, I will share the PIN with you. Thank you.`);
+                return ` <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank"> ${d.daynaiwalaNumber}</a>`;
+           })()}
       </div>
     </div>
 
@@ -727,18 +701,15 @@ function buildCardCancel(d, his_did) {
 
 function formatDateTime(value) {
   if (!value) return "--";
-
   let d;
-
-  // Firebase Timestamp
   if (typeof value === "object" && value.seconds) {
     d = new Date(value.seconds * 1000);
   }
-  // Number timestamp
+ 
   else if (!isNaN(value)) {
     d = new Date(Number(value));
   }
-  // String date
+ 
   else if (typeof value === "string") {
     // Fix "YYYY-MM-DD HH:mm:ss" → ISO
     const fixed = value.replace(" ", "T");
@@ -746,7 +717,6 @@ function formatDateTime(value) {
   }
 
   if (!d || isNaN(d.getTime())) return "--";
-
   return d.toLocaleString("en-GB", {
     day: "2-digit",
     month: "long",
@@ -807,16 +777,10 @@ function buildCardIncompletePositive(d, his_did) {
         </div>
 
         ${d.own_amount && d.own_amount !== "null" ? `<div class="amount">${d.own_amount}</div>` : ``}
-        ${d.own_pay_status === "false"
-          ? `<button class="find-partner-btn" onclick="makePayment('${usDid}', '${his_did}', '${selfNumber}', this)">
-              Make Payment ${d.own_amount}
-            </button>`
-          : ``}
+        ${d.own_pay_status === "false"? `<button class="find-partner-btn" onclick="makePayment('${usDid}', '${his_did}', '${selfNumber}', this)">Make Payment ${d.own_amount}</button>`: ``}
       </div>
 
     </div>
-
-    <div class="hint">Tap on number to chat directly with your partner</div>
     <div class="uid">UID: ${his_did}</div>
   `;
 }
