@@ -420,32 +420,6 @@ const list = document.getElementById("list");
 const usDid = localStorage.getItem("us_did");
 const selfNumber = localStorage.getItem("number");
 
-// async function loadTrades() {
-//   const snap = await getDocs(collection(db, "users_setting", usDid, "trade_history"));
-
-//   if (snap.empty) {
-//     list.innerHTML = "<p style='text-align:center;color:#777;'>No trades found</p>";
-//     return;
-//   }
-
-//   snap.forEach(doc => {
-//     const d = doc.data();
-//     const his_did = doc.id;
-//     let html = "";
-
-//     if (d.result === "positive") html = buildCardPositive(d, his_did, usDid, selfNumber);
-//     else if (d.result === "negative" || d.result === "incomplete negative") html = buildCardNegative(d, his_did);
-//     else if (d.result === "cancel") html = buildCardCancel(d, his_did);
-//     else if (d.result === "incomplete positive") html = buildCardIncompletePositive(d, his_did);
-//     else html = buildCardDefault(d, his_did);
-
-//     const card = document.createElement("div");
-//     card.className = "card";
-//     card.innerHTML = html;
-//     list.appendChild(card);
-//   });
-// }
-
 async function loadTrades() {
   try {
     // 🔥 Query with ascending date order
@@ -872,6 +846,13 @@ window.handleFindPartner = async function (usDid, his_did, selfNumber, btn) {
     const snap = await getDocs(q);
 
     if (snap.empty) {
+      transaction.update(selfRef, {
+        laynaiwalaAmount: 0,
+        laynaiwalaNumber: "owner",
+        laynaiwalaUsdid: "owner",
+        laynaiwalaThdid: "owner,
+        laynaiwalaPartyType: "owner"
+      });
       alert("No partner available");
       return;
     }
