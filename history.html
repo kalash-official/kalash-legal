@@ -451,7 +451,7 @@ async function loadTrades() {
     // 🔥 Query with ascending date order
     const q = query(
       collection(db, "users_setting", usDid, "trade_history"),
-      orderBy("date", "asc")
+      orderBy("date", "desc")
     );
 
     const snap = await getDocs(q);
