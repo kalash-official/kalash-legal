@@ -544,36 +544,38 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           : ``}
       </div>
 
-      <!-- CANCEL LAYNAIWALA -->
-      <div class="profile">
-        <div class="avatar">
-          <img src="profile.png">
-          <span class="badge" style="display:${d.cancellaynaiwala_pay_status === "true" ? "inline" : "none"}">✔</span>
-        </div>
+      ${d.cancellaynaiwalaUsdid !== "owner" ? `
+<!-- CANCEL LAYNAIWALA -->
+<div class="profile">
+  <div class="avatar">
+    <img src="profile.png">
+    <span class="badge" style="display:${d.cancellaynaiwala_pay_status === "true" ? "inline" : "none"}">✔</span>
+  </div>
 
-        ${d.cancellaynaiwalaAmount && d.cancellaynaiwalaAmount !== "null"
-          ? `<div class="amount">${d.cancellaynaiwalaAmount}</div>` : ``}
+  ${d.cancellaynaiwalaAmount && d.cancellaynaiwalaAmount !== "null"
+    ? `<div class="amount">${d.cancellaynaiwalaAmount}</div>` : ``}
 
-        ${d.cancellaynaiwalaUsdid === "null"
-          ? `<button class="find-partner-btn"onclick="handleFindPartnerCancel('${usDid}', '${his_did}', '${selfNumber}', this)"> Find Partner </button>`
-          : `<div class="status">Partner alloted</div>`}
+  ${d.cancellaynaiwalaUsdid === "null"
+    ? `<button class="find-partner-btn" onclick="handleFindPartnerCancel('${usDid}', '${his_did}', '${selfNumber}', this)"> Find Partner </button>`
+    : `<div class="status">Partner alloted</div>`}
 
-        ${d.cancellaynaiwalaUsdid !== "null" && d.cancellaynaiwala_pay_status !== "true"
-          ? `<button class="find-partner-btn" onclick="openVerifyPopup('${d}', 'cancel', '${usDid}', '${his_did}')">Verify Payment</button>`
-          : ``}
+  ${d.cancellaynaiwalaUsdid !== "null" && d.cancellaynaiwala_pay_status !== "true"
+    ? `<button class="find-partner-btn" onclick="openVerifyPopup('${d}', 'cancel', '${usDid}', '${his_did}')">Verify Payment</button>`
+    : ``}
 
-        ${d.cancellaynaiwalaNumber && d.cancellaynaiwalaNumber !== "null"
-          ? (() => {
-              const phone = d.cancellaynaiwalaNumber.replace(/[^0-9]/g, "");
-              const message = encodeURIComponent(
-                `Hello, I have made the payment of ${d.cancellaynaiwalaAmount || ""}. Please share the PIN so that my account can be unblocked. Thank you.`
-              );
-              return `
-                <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank"> ${d.cancellaynaiwalaNumber}</a>
-              `;
-            })()
-          : ``}
-      </div>
+  ${d.cancellaynaiwalaNumber && d.cancellaynaiwalaNumber !== "null"
+    ? (() => {
+        const phone = d.cancellaynaiwalaNumber.replace(/[^0-9]/g, "");
+        const message = encodeURIComponent(
+          `Hello, I have made the payment of ${d.cancellaynaiwalaAmount || ""}. Please share the PIN so that my account can be unblocked. Thank you.`
+        );
+        return `
+          <a class="wa-link" href="https://wa.me/${phone}?text=${message}" target="_blank"> ${d.cancellaynaiwalaNumber}</a>
+        `;
+      })()
+    : ``}
+</div>
+` : ``}
 
       <!-- OWN -->
       <div class="profile">
