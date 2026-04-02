@@ -544,7 +544,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           : ``}
       </div>
 
-      ${d.cancellaynaiwalaUsdid !== "owner" ? `
+      ${d.cancellaynaiwalaUsdid !== "owner" && d.cancellaynaiwalaAmount == 0 ? `
 <!-- CANCEL LAYNAIWALA -->
 <div class="profile">
   <div class="avatar">
