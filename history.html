@@ -420,30 +420,82 @@ const list = document.getElementById("list");
 const usDid = localStorage.getItem("us_did");
 const selfNumber = localStorage.getItem("number");
 
+// async function loadTrades() {
+//   const snap = await getDocs(collection(db, "users_setting", usDid, "trade_history"));
+
+//   if (snap.empty) {
+//     list.innerHTML = "<p style='text-align:center;color:#777;'>No trades found</p>";
+//     return;
+//   }
+
+//   snap.forEach(doc => {
+//     const d = doc.data();
+//     const his_did = doc.id;
+//     let html = "";
+
+//     if (d.result === "positive") html = buildCardPositive(d, his_did, usDid, selfNumber);
+//     else if (d.result === "negative" || d.result === "incomplete negative") html = buildCardNegative(d, his_did);
+//     else if (d.result === "cancel") html = buildCardCancel(d, his_did);
+//     else if (d.result === "incomplete positive") html = buildCardIncompletePositive(d, his_did);
+//     else html = buildCardDefault(d, his_did);
+
+//     const card = document.createElement("div");
+//     card.className = "card";
+//     card.innerHTML = html;
+//     list.appendChild(card);
+//   });
+// }
+
 async function loadTrades() {
-  const snap = await getDocs(collection(db, "users_setting", usDid, "trade_history"));
+  try {
+    // 🔥 Query with ascending date order
+    const q = query(
+      collection(db, "users_setting", usDid, "trade_history"),
+      orderBy("date", "asc")
+    );
 
-  if (snap.empty) {
-    list.innerHTML = "<p style='text-align:center;color:#777;'>No trades found</p>";
-    return;
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      list.innerHTML = "<p style='text-align:center;color:#777;'>No trades found</p>";
+      return;
+    }
+
+    list.innerHTML = ""; // clear old data
+
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      const his_did = docSnap.id;
+      let html = "";
+
+      // 🔀 same logic (no change)
+      if (d.result === "positive") {
+        html = buildCardPositive(d, his_did, usDid, selfNumber);
+      } 
+      else if (d.result === "negative" || d.result === "incomplete negative") {
+        html = buildCardNegative(d, his_did);
+      } 
+      else if (d.result === "cancel") {
+        html = buildCardCancel(d, his_did);
+      } 
+      else if (d.result === "incomplete positive") {
+        html = buildCardIncompletePositive(d, his_did);
+      } 
+      else {
+        html = buildCardDefault(d, his_did);
+      }
+
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = html;
+
+      list.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error("Error loading trades:", error);
+    list.innerHTML = "<p style='text-align:center;color:red;'>Error loading trades</p>";
   }
-
-  snap.forEach(doc => {
-    const d = doc.data();
-    const his_did = doc.id;
-    let html = "";
-
-    if (d.result === "positive") html = buildCardPositive(d, his_did, usDid, selfNumber);
-    else if (d.result === "negative" || d.result === "incomplete negative") html = buildCardNegative(d, his_did);
-    else if (d.result === "cancel") html = buildCardCancel(d, his_did);
-    else if (d.result === "incomplete positive") html = buildCardIncompletePositive(d, his_did);
-    else html = buildCardDefault(d, his_did);
-
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = html;
-    list.appendChild(card);
-  });
 }
 
 /* POSITIVE */
