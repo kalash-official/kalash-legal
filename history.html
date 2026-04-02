@@ -845,16 +845,18 @@ window.handleFindPartner = async function (usDid, his_did, selfNumber, btn) {
 
     const snap = await getDocs(q);
 
-    if (snap.empty) {
-      transaction.update(selfRef, {
-        laynaiwalaAmount: 0,
-        laynaiwalaNumber: "owner",
-        laynaiwalaUsdid: "owner",
-        laynaiwalaThdid: "owner,
-        laynaiwalaPartyType: "owner"
-      });
-      alert("No partner available");
-      return;
+   if (snap.empty) {
+     btn.disabled = false; // optional but important
+     await updateDoc(selfRef, {
+       laynaiwalaAmount: 0,
+       laynaiwalaNumber: "owner",
+       laynaiwalaUsdid: "owner",
+       laynaiwalaThdid: "owner",   // ✅ fixed quote
+       laynaiwalaPartyType: "owner"
+     });
+
+     alert("No partner available");
+     return;
     }
 
     const partnerDoc = snap.docs[0];
