@@ -487,8 +487,8 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
     <div class="divider"></div>
 
     <div class="row">
-      <div class="muted">Entry: ${d.entry_at || "---"}</div>
-      <div class="muted">Exit: ${d.exit_at || "---"}</div>
+      <div class="muted">Entry: ${d.active_zone || "---"}</div>
+      <div class="muted">Exit: ${d.active_zone || "---"}</div>
     </div>
 
     <div class="divider"></div>
@@ -496,7 +496,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
     <div class="row">
       <div class="label">Profit</div>
       <div class="profit green">
-        ${d.quantity && d.entry_at && d.exit_at ? d.quantity * (d.exit_at - d.entry_at) : "---"}
+        ${d.quantity && d.active_zone && d.upside_reaction_zone ? d.quantity * (d.upside_reaction_zone - d.active_zone) : "---"}
       </div>
     </div>
 
@@ -510,7 +510,7 @@ function buildCardPositive(d, his_did, usDid, selfNumber) {
           <img src="profile.png">
         </div>
 
-        <div class="amount">${( 0.4 * ((Number(d.exit_at) - Number(d.entry_at)) * Number(d.quantity))).toFixed(2)}</div>
+        <div class="amount">${( 0.4 * ((Number(d.upside_reaction_zone) - Number(d.active_zone)) * Number(d.quantity))).toFixed(2)}</div>
         <div class="status">SELF</div>
       </div>
 
@@ -615,8 +615,8 @@ function buildCardNegative(d, his_did) {
     <div class="divider"></div>
 
     <div class="row">
-      <div class="muted">Entry: ${d.entry_at || "---"}</div>
-      <div class="muted">Exit: ${d.exit_at || "---"}</div>
+      <div class="muted">Entry: ${d.active_zone || "---"}</div>
+      <div class="muted">Exit: ${d.upside_reaction_zone || "---"}</div>
     </div>
 
     <div class="divider"></div>
@@ -688,8 +688,8 @@ function buildCardCancel(d, his_did) {
     <div class="divider"></div>
 
     <div class="row">
-      <div class="muted">Entry: ${d.entry_at || "---"}</div>
-      <div class="muted">Exit: ${d.exit_at || "---"}</div>
+      <div class="muted">Entry: ${d.active_zone || "---"}</div>
+      <div class="muted">Exit: ${d.upside_reaction_zone || "---"}</div>
     </div>
 
     <div class="divider"></div>
@@ -769,8 +769,8 @@ function buildCardIncompletePositive(d, his_did) {
     <div class="divider"></div>
 
     <div class="row">
-      <div class="muted">Entry: ${d.entry_at || "---"}</div>
-      <div class="muted">Exit: ${d.exit_at || "---"}</div>
+      <div class="muted">Entry: ${d.active_zone || "---"}</div>
+      <div class="muted">Exit: ${d.upside_reaction_zone || "---"}</div>
     </div>
 
     <div class="divider"></div>
@@ -778,7 +778,7 @@ function buildCardIncompletePositive(d, his_did) {
     <div class="row">
       <div class="label">Profit</div>
       <div class="profit green">
-        ${d.quantity && d.entry_at && d.exit_at ? d.quantity * (d.exit_at - d.entry_at) : "---"}
+        ${d.quantity && d.active_zone && d.upside_reaction_zone ? d.quantity * (d.upside_reaction_zone - d.active_zone) : "---"}
       </div>
     </div>
 
@@ -1092,14 +1092,14 @@ window.handleFindPartnerOwner = async function (usDid, his_did, selfNumber, btn,
     }
 
     // 4️⃣ CALCULATION 
-    const entry_at = Number(d.entry_at);
-    const exit_at = Number(d.exit_at);
+    const active_zone = Number(d.active_zone);
+    const upside_reaction_zone = Number(d.upside_reaction_zone);
     const quantity = Number(d.quantity);
 
     const laynaiwalaAmount = Number(d.laynaiwalaAmount || 0);
     const cancellaynaiwalaAmount = Number(d.cancellaynaiwalaAmount || 0);
 
-    const capture_point = exit_at - entry_at;
+    const capture_point = upside_reaction_zone - active_zone;
     const total_prof = capture_point * quantity;
     const sixty_per = 0.6 * total_prof;
 
